@@ -353,3 +353,5 @@ healthchecksdb
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+dist/*.zip
