@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -66,7 +66,8 @@ namespace Notepads.Views.MainPage
                 _notepadsCore.TextEditorFontZoomFactorChanged += (sender, editor) => { if (NotepadsCore.GetSelectedTextEditor() == editor) UpdateFontZoomIndicator(editor); };
                 _notepadsCore.TextEditorEncodingChanged += (sender, editor) => { if (NotepadsCore.GetSelectedTextEditor() == editor) UpdateEncodingIndicator(editor.GetEncoding()); };
                 _notepadsCore.TextEditorLineEndingChanged += (sender, editor) => { if (NotepadsCore.GetSelectedTextEditor() == editor) { UpdateLineEndingIndicator(editor.GetLineEnding()); UpdateLineColumnIndicator(editor); } };
-                _notepadsCore.TextEditorEditorModificationStateChanged += (sender, editor) => { if (NotepadsCore.GetSelectedTextEditor() == editor) SetupStatusBar(editor); };
+                _notepadsCore.TextEditorEditorModificationStateChanged += (sender, editor) => { if (NotepadsCore.GetSelectedTextEditor() == editor) { SetupStatusBar(editor); UpdateToolBarState(); } };
+                _notepadsCore.TextEditorModeChanged += (sender, editor) => { if (NotepadsCore.GetSelectedTextEditor() == editor) UpdateToolBarState(); };
                 _notepadsCore.TextEditorFileModificationStateChanged += (sender, editor) => { if (NotepadsCore.GetSelectedTextEditor() == editor) OnTextEditorFileModificationStateChanged(editor); };
 
                 return _notepadsCore;
@@ -129,6 +130,8 @@ namespace Notepads.Views.MainPage
             RootSplitView.PaneOpening += delegate { SettingsFrame.Navigate(typeof(SettingsPage), null, new SuppressNavigationTransitionInfo()); };
             RootSplitView.PaneClosed += delegate { NotepadsCore.FocusOnSelectedTextEditor(); };
             NewSetButton.Click += delegate { NotepadsCore.OpenNewTextEditor(_defaultNewFileName); };
+            InitializeTopToolBar();
+            Sets.SelectionChanged += delegate { UpdateToolBarState(); };
         }
 
         private void InitializeKeyboardShortcuts()
@@ -490,11 +493,13 @@ namespace Notepads.Views.MainPage
             {
                 SetupStatusBar(textEditor);
                 NotepadsCore.FocusOnSelectedTextEditor();
+                UpdateToolBarState();
             }
         }
 
         private async void OnTextEditorUnloaded(object sender, ITextEditor textEditor)
         {
+            UpdateToolBarState();
             if (NotepadsCore.GetNumberOfOpenedTextEditors() == 0)
             {
                 if (AppSettingsService.IsSessionSnapshotEnabled)

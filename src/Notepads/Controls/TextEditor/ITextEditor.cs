@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -140,5 +140,37 @@ namespace Notepads.Controls.TextEditor
         void Dispose();
 
         FlyoutBase GetContextFlyout();
+
+        void Undo();
+
+        void Redo();
+
+        void Cut();
+
+        void Copy();
+
+        void Paste();
+
+        void Delete();
+
+        void SelectAll();
+
+        void InsertDateTime();
+
+        void ToggleWordWrap();
+
+        bool IsWordWrap();
+
+        void WrapSelection(string prefix, string suffix);
+
+        void FormatLinePrefix(string prefix);
+
+        void InsertTable(int rows, int cols);
+
+        void ClearFormatting();
+
+        void Indent();
+
+        void Unindent();
     }
 }
