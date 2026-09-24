@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -27,6 +27,7 @@ namespace Notepads.Services
         public static event EventHandler<bool> OnStatusBarVisibilityChanged;
         public static event EventHandler<bool> OnSessionBackupAndRestoreOptionChanged;
         public static event EventHandler<bool> OnHighlightMisspelledWordsChanged;
+        public static event EventHandler<bool> OnAutoSaveOnCloseChanged;
 
         private static string _editorFontFamily;
 
@@ -226,7 +227,7 @@ namespace Notepads.Services
             }
         }
 
-        private static bool _isSessionSnapshotEnabled;
+        private static bool _isSessionSnapshotEnabled = true;
 
         public static bool IsSessionSnapshotEnabled
         {
@@ -234,8 +235,11 @@ namespace Notepads.Services
             set
             {
                 _isSessionSnapshotEnabled = value;
+                _autoSaveOnClose = value;
                 OnSessionBackupAndRestoreOptionChanged?.Invoke(null, value);
+                OnAutoSaveOnCloseChanged?.Invoke(null, value);
                 ApplicationSettingsStore.Write(SettingsKey.EditorEnableSessionBackupAndRestoreBool, value);
+                ApplicationSettingsStore.Write(SettingsKey.AutoSaveOnCloseBool, value);
             }
         }
 
@@ -261,6 +265,22 @@ namespace Notepads.Services
             {
                 _exitWhenLastTabClosed = value;
                 ApplicationSettingsStore.Write(SettingsKey.ExitWhenLastTabClosed, value);
+            }
+        }
+
+        private static bool _autoSaveOnClose = true;
+
+        public static bool IsAutoSaveOnCloseEnabled
+        {
+            get => _autoSaveOnClose;
+            set
+            {
+                _autoSaveOnClose = value;
+                _isSessionSnapshotEnabled = value;
+                OnAutoSaveOnCloseChanged?.Invoke(null, value);
+                OnSessionBackupAndRestoreOptionChanged?.Invoke(null, value);
+                ApplicationSettingsStore.Write(SettingsKey.AutoSaveOnCloseBool, value);
+                ApplicationSettingsStore.Write(SettingsKey.EditorEnableSessionBackupAndRestoreBool, value);
             }
         }
 
@@ -350,20 +370,29 @@ namespace Notepads.Services
             if (!App.IsPrimaryInstance)
             {
                 _isSessionSnapshotEnabled = false;
+                _autoSaveOnClose = false;
             }
             else if (App.IsGameBarWidget)
             {
                 _isSessionSnapshotEnabled = true;
+                _autoSaveOnClose = true;
             }
             else
             {
-                if (ApplicationSettingsStore.Read(SettingsKey.EditorEnableSessionBackupAndRestoreBool) is bool enableSessionBackupAndRestore)
+                if (ApplicationSettingsStore.Read(SettingsKey.AutoSaveOnCloseBool) is bool autoSave)
+                {
+                    _isSessionSnapshotEnabled = autoSave;
+                    _autoSaveOnClose = autoSave;
+                }
+                else if (ApplicationSettingsStore.Read(SettingsKey.EditorEnableSessionBackupAndRestoreBool) is bool enableSessionBackupAndRestore)
                 {
                     _isSessionSnapshotEnabled = enableSessionBackupAndRestore;
+                    _autoSaveOnClose = enableSessionBackupAndRestore;
                 }
                 else
                 {
-                    _isSessionSnapshotEnabled = false;
+                    _isSessionSnapshotEnabled = true;
+                    _autoSaveOnClose = true;
                 }
             }
         }
@@ -598,6 +627,8 @@ namespace Notepads.Services
             {
                 _exitWhenLastTabClosed = false;
             }
+
+            _autoSaveOnClose = _isSessionSnapshotEnabled;
         }
     }
 }

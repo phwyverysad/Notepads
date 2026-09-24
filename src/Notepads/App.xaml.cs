@@ -42,32 +42,51 @@ namespace Notepads
         /// </summary>
         public App()
         {
-            UnhandledException += OnUnhandledException;
-            TaskScheduler.UnobservedTaskException += OnUnobservedException;
-
-            InstanceHandlerMutex = new Mutex(true, App.ApplicationName, out bool isNew);
-            if (isNew)
+            LoggingService.SafeLog("App() constructor started");
+            try
             {
-                IsPrimaryInstance = true;
-                ApplicationSettingsStore.Write(SettingsKey.ActiveInstanceIdStr, null);
+                UnhandledException += OnUnhandledException;
+                TaskScheduler.UnobservedTaskException += OnUnobservedException;
+
+                InstanceHandlerMutex = new Mutex(true, App.ApplicationName, out bool isNew);
+                if (isNew)
+                {
+                    IsPrimaryInstance = true;
+                    ApplicationSettingsStore.Write(SettingsKey.ActiveInstanceIdStr, null);
+                }
+                else
+                {
+                    InstanceHandlerMutex.Close();
+                }
+
+                LoggingService.SafeLog($"App() Mutex handled: isNew={isNew}, IsPrimaryInstance={IsPrimaryInstance}");
+
+                ApplicationSettingsStore.Write(SettingsKey.ActiveInstanceIdStr, App.InstanceId.ToString());
+
+                try
+                {
+                    if (string.IsNullOrEmpty(Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride))
+                    {
+                        Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "th-TH";
+                    }
+                    LoggingService.SafeLog("App() PrimaryLanguageOverride: " + Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride);
+                }
+                catch (Exception langEx)
+                {
+                    LoggingService.SafeLog("App() PrimaryLanguageOverride failed: " + langEx);
+                }
+
+                LoggingService.SafeLog("App() calling InitializeComponent()...");
+                InitializeComponent();
+                LoggingService.SafeLog("App() InitializeComponent() succeeded");
+
+                Suspending += OnSuspending;
             }
-            else
+            catch (Exception ex)
             {
-                InstanceHandlerMutex.Close();
+                LoggingService.SafeLog("CRITICAL EXCEPTION IN App() constructor: " + ex);
+                throw;
             }
-
-            LoggingService.LogInfo($"[{nameof(App)}] Started: Instance = {InstanceId} IsPrimaryInstance: {IsPrimaryInstance} IsGameBarWidget: {IsGameBarWidget}.");
-
-            ApplicationSettingsStore.Write(SettingsKey.ActiveInstanceIdStr, App.InstanceId.ToString());
-
-            if (string.IsNullOrEmpty(Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride))
-            {
-                Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "th-TH";
-            }
-
-            InitializeComponent();
-
-            Suspending += OnSuspending;
         }
 
         /// <summary>
@@ -147,10 +166,13 @@ namespace Notepads
 
             try
             {
+                LoggingService.SafeLog("ActivateAsync: Calling ActivationService.ActivateAsync...");
                 await ActivationService.ActivateAsync(rootFrame, e);
+                LoggingService.SafeLog("ActivateAsync: ActivationService.ActivateAsync completed successfully");
             }
             catch (Exception ex)
             {
+                LoggingService.SafeLog("CRITICAL EXCEPTION IN ActivateAsync: " + ex);
                 var diagnosticInfo = new Dictionary<string, string>()
                 {
                     { "Message", ex?.Message },
@@ -211,6 +233,7 @@ namespace Notepads
         /// <param name="e">Details about the navigation failure</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
+            LoggingService.SafeLog($"OnNavigationFailed: {e.SourcePageType?.FullName} Exception: {e.Exception}");
             var exception = new Exception($"[{nameof(App)}] Failed to load Page: {e.SourcePageType.FullName} Exception: {e.Exception.Message}");
             LoggingService.LogException(exception);
             AnalyticsService.TrackEvent("FailedToLoadPage", new Dictionary<string, string>()
@@ -251,6 +274,7 @@ namespace Notepads
         // Occurs when an exception is not handled on the UI thread.
         private static void OnUnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
+            LoggingService.SafeLog($"OnUnhandledException: {e.Message} | {e.Exception}");
             LoggingService.LogError($"[{nameof(App)}] OnUnhandledException: {e.Exception}");
 
             var diagnosticInfo = new Dictionary<string, string>()

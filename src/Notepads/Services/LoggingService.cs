@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -28,6 +28,25 @@ namespace Notepads.Services
         private static StorageFile _logFile;
         private static Task _backgroundTask;
         private static bool _initialized;
+
+        public static void SafeLog(string message)
+        {
+            try
+            {
+                string dir = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+                string file = System.IO.Path.Combine(dir, "boot.log");
+                System.IO.File.AppendAllText(file, $"[{DateTime.UtcNow:O}] {message}\r\n");
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    string temp = System.IO.Path.GetTempPath();
+                    System.IO.File.AppendAllText(System.IO.Path.Combine(temp, "notepads_boot.log"), $"[{DateTime.UtcNow:O}] {message} (LocalFolder ex: {ex.Message})\r\n");
+                }
+                catch { }
+            }
+        }
 
         public static async Task InitializeFileSystemLoggingAsync()
         {

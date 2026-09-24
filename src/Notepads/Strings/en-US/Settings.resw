@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -428,5 +428,17 @@
   <data name="AdvancedPage_LaunchPreferenceSettings_ExitWhenLastTabClosedToggleSwitch.OnContent" xml:space="preserve">
     <value>Exit app when closing last tab</value>
     <comment>AdvancedPage AppLifecyclePreferenceSettings ExitingLastTabClosesWindowToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_AutoSaveOnCloseToggleSwitch.OffContent" xml:space="preserve">
+    <value>Auto save on close</value>
+    <comment>AdvancedPage LaunchPreferenceSettings AutoSaveOnCloseToggleSwitch Off display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_AutoSaveOnCloseToggleSwitch.OnContent" xml:space="preserve">
+    <value>Auto save on close</value>
+    <comment>AdvancedPage LaunchPreferenceSettings AutoSaveOnCloseToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_AutoSaveOnClose_Description.Text" xml:space="preserve">
+    <value>Automatically save modified files when closing the application.</value>
+    <comment>AdvancedPage AutoSaveOnClose Description display text.</comment>
   </data>
 </root>

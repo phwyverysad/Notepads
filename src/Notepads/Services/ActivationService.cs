@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -41,12 +41,14 @@ namespace Notepads.Services
 
         private static void ProtocolActivated(Frame rootFrame, ProtocolActivatedEventArgs protocolActivatedEventArgs)
         {
-            LoggingService.LogInfo($"[{nameof(ActivationService)}] [ProtocolActivated] Protocol: {protocolActivatedEventArgs.Uri}");
+            LoggingService.SafeLog($"[ActivationService] ProtocolActivated: {protocolActivatedEventArgs.Uri}");
 
             switch (rootFrame.Content)
             {
                 case null:
+                    LoggingService.SafeLog("[ActivationService] Calling rootFrame.Navigate(typeof(NotepadsMainPage))...");
                     rootFrame.Navigate(typeof(NotepadsMainPage), protocolActivatedEventArgs);
+                    LoggingService.SafeLog("[ActivationService] rootFrame.Navigate finished.");
                     break;
                 case NotepadsMainPage mainPage:
                     mainPage.ExecuteProtocol(protocolActivatedEventArgs.Uri);
@@ -56,11 +58,13 @@ namespace Notepads.Services
 
         private static void LaunchActivated(Frame rootFrame, LaunchActivatedEventArgs launchActivatedEventArgs)
         {
-            LoggingService.LogInfo($"[{nameof(ActivationService)}] [LaunchActivated] Kind: {launchActivatedEventArgs.Kind}");
+            LoggingService.SafeLog($"[ActivationService] LaunchActivated: Kind={launchActivatedEventArgs.Kind}, Args={launchActivatedEventArgs.Arguments}");
 
             if (rootFrame.Content == null)
             {
+                LoggingService.SafeLog("[ActivationService] Calling rootFrame.Navigate(typeof(NotepadsMainPage))...");
                 rootFrame.Navigate(typeof(NotepadsMainPage), launchActivatedEventArgs.Arguments);
+                LoggingService.SafeLog("[ActivationService] rootFrame.Navigate finished.");
             }
         }
 

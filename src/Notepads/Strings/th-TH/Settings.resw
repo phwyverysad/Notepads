@@ -236,19 +236,19 @@
     <comment>AboutPage Changelog Title display text.</comment>
   </data>
   <data name="AdvancedPage_SessionSnapshotSettings_Description.Text" xml:space="preserve">
-    <value>เมื่อเปิดใช้งาน Notepads จะจดจำเซสชันปัจจุบันสำหรับการเปิดครั้งถัดไป และสำรองข้อมูลเป็นระยะเพื่อป้องกันการสูญหายของข้อมูล Notepads จะไม่แจ้งเตือนให้บันทึกไฟล์เมื่อปิดแอปหากเปิดใช้งานฟีเจอร์นี้</value>
+    <value>เมื่อเปิดใช้งาน Notepads จะบันทึกแท็บและเนื้อหาที่พิมพ์ไว้ในโปรแกรมโดยอัตโนมัติเมื่อกดปิด และเปิดคืนค่าเดิมทั้งหมดเมื่อเปิดโปรแกรมใหม่ โดยไม่ต้องบันทึกเป็นไฟล์แยก</value>
     <comment>AdvancedPage SessionSnapshotSettings Description display text.</comment>
   </data>
   <data name="AdvancedPage_SessionSnapshotSettings_OnOffToggleSwitch.OffContent" xml:space="preserve">
-    <value>เปิดใช้งานการบันทึกเซสชัน</value>
+    <value>บันทึกอัตโนมัติและจำแท็บในโปรแกรม</value>
     <comment>AdvancedPage SessionSnapshotSettings OnOffToggleSwitch On display text.</comment>
   </data>
   <data name="AdvancedPage_SessionSnapshotSettings_OnOffToggleSwitch.OnContent" xml:space="preserve">
-    <value>เปิดใช้งานการบันทึกเซสชัน</value>
+    <value>บันทึกอัตโนมัติและจำแท็บในโปรแกรม</value>
     <comment>AdvancedPage SessionSnapshotSettings OnOffToggleSwitch Off display text.</comment>
   </data>
   <data name="AdvancedPage_SessionSnapshotSettings_Title.Text" xml:space="preserve">
-    <value>การตั้งค่าการบันทึกเซสชัน</value>
+    <value>บันทึกอัตโนมัติและจำแท็บเมื่อปิดโปรแกรม</value>
     <comment>AdvancedPageSessionSnapshotSettings Title display text.</comment>
   </data>
   <data name="TextAndEditorPage_SpellingSettings_HighlightMisspelledWordsToggleSwitch.OffContent" xml:space="preserve">
@@ -370,5 +370,17 @@
   <data name="AdvancedPage_LaunchPreferenceSettings_ExitWhenLastTabClosedToggleSwitch.OnContent" xml:space="preserve">
     <value>ปิดแอปเมื่อปิดแท็บสุดท้าย</value>
     <comment>AdvancedPage AppLifecyclePreferenceSettings ExitingLastTabClosesWindowToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_AutoSaveOnCloseToggleSwitch.OffContent" xml:space="preserve">
+    <value>บันทึกอัตโนมัติเมื่อปิดโปรแกรม</value>
+    <comment>AdvancedPage LaunchPreferenceSettings AutoSaveOnCloseToggleSwitch Off display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_AutoSaveOnCloseToggleSwitch.OnContent" xml:space="preserve">
+    <value>บันทึกอัตโนมัติเมื่อปิดโปรแกรม</value>
+    <comment>AdvancedPage LaunchPreferenceSettings AutoSaveOnCloseToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_AutoSaveOnClose_Description.Text" xml:space="preserve">
+    <value>บันทึกไฟล์ที่แก้ไขทั้งหมดโดยอัตโนมัติเมื่อปิดโปรแกรม</value>
+    <comment>AdvancedPage AutoSaveOnClose Description display text.</comment>
   </data>
 </root>

@@ -19,7 +19,7 @@
       <Code Type="Fragment" Language="cs">
         <![CDATA[
           Directory.CreateDirectory(OutDir);
-          var appName = "Notepads" + (Configuration.Equals("Production") ? "" : "-Dev");
+          var appName = (Configuration.Equals("Production") || Configuration.Equals("Release")) ? "Notepads" : "Notepads-Dev";
           var manifest = new XmlDocument();
           manifest.Load(ManifestPath);
           ManifestPath = OutDir.TrimEnd('\\') + @"\Package.appxmanifest";

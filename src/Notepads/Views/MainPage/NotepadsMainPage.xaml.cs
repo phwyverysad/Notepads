@@ -86,19 +86,31 @@ namespace Notepads.Views.MainPage
 
         public NotepadsMainPage()
         {
-            InitializeComponent();
+            LoggingService.SafeLog("NotepadsMainPage constructor started");
+            try
+            {
+                InitializeComponent();
+                LoggingService.SafeLog("NotepadsMainPage InitializeComponent finished");
 
-            _defaultNewFileName = _resourceLoader.GetString("TextEditor_DefaultNewFileName");
+                _defaultNewFileName = _resourceLoader.GetString("TextEditor_DefaultNewFileName");
+                LoggingService.SafeLog("NotepadsMainPage _defaultNewFileName: " + _defaultNewFileName);
 
-            // Set custom title bar dragging area
-            Window.Current.SetTitleBar(AppTitleBar);
+                // Set custom title bar dragging area
+                Window.Current.SetTitleBar(AppTitleBar);
 
-            InitializeNotificationCenter();
-            InitializeThemeSettings();
-            InitializeStatusBar();
-            InitializeControls();
-            InitializeMainMenu();
-            InitializeKeyboardShortcuts();
+                InitializeNotificationCenter();
+                InitializeThemeSettings();
+                InitializeStatusBar();
+                InitializeControls();
+                InitializeMainMenu();
+                InitializeKeyboardShortcuts();
+                LoggingService.SafeLog("NotepadsMainPage all initializations completed");
+            }
+            catch (Exception ex)
+            {
+                LoggingService.SafeLog("CRITICAL EXCEPTION IN NotepadsMainPage constructor: " + ex);
+                throw;
+            }
 
             // Session backup and restore toggle
             AppSettingsService.OnSessionBackupAndRestoreOptionChanged += OnSessionBackupAndRestoreOptionChanged;
@@ -206,7 +218,7 @@ namespace Notepads.Views.MainPage
         {
             int loadedCount = 0;
 
-            if (!_loaded && AppSettingsService.IsSessionSnapshotEnabled)
+            if (!_loaded && (AppSettingsService.IsSessionSnapshotEnabled || AppSettingsService.IsAutoSaveOnCloseEnabled))
             {
                 try
                 {
@@ -283,7 +295,7 @@ namespace Notepads.Views.MainPage
                 _loaded = true;
             }
 
-            if (AppSettingsService.IsSessionSnapshotEnabled)
+            if (AppSettingsService.IsSessionSnapshotEnabled || AppSettingsService.IsAutoSaveOnCloseEnabled)
             {
                 SessionManager.IsBackupEnabled = true;
                 SessionManager.StartSessionBackup();
@@ -376,9 +388,9 @@ namespace Notepads.Views.MainPage
         {
             var deferral = e.GetDeferral();
 
-            if (AppSettingsService.IsSessionSnapshotEnabled)
+            if (AppSettingsService.IsSessionSnapshotEnabled || AppSettingsService.IsAutoSaveOnCloseEnabled)
             {
-                // Save session before app exit
+                // Save session before app exit (saves all open tabs and typed content internally in app storage)
                 await SessionManager.SaveSessionAsync(() => { SessionManager.IsBackupEnabled = false; });
                 App.InstanceHandlerMutex?.Dispose();
                 deferral.Complete();
@@ -502,7 +514,7 @@ namespace Notepads.Views.MainPage
             UpdateToolBarState();
             if (NotepadsCore.GetNumberOfOpenedTextEditors() == 0)
             {
-                if (AppSettingsService.IsSessionSnapshotEnabled)
+                if (AppSettingsService.IsSessionSnapshotEnabled || AppSettingsService.IsAutoSaveOnCloseEnabled)
                 {
                     await SessionManager.SaveSessionAsync(() => { SessionManager.IsBackupEnabled = false; });
                 }

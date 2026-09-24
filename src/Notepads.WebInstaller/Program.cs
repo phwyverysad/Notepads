@@ -18,20 +18,22 @@ namespace Notepads.WebInstaller
 
     internal static class Program
     {
-        private const string PackageDownloadUrl = "https://github.com/phwyverysad/Notepads/releases/latest/download/Notepads-x64.zip";
-        private const string FallbackDownloadUrl = "https://github.com/0x7c13/Notepads/releases/latest/download/Notepads-x64.zip";
+        internal const string PackageDownloadUrl = "https://github.com/phwyverysad/Notepads/releases/latest/download/Notepads-x64.zip";
+        internal const string FallbackDownloadUrl = "https://github.com/0x7c13/Notepads/releases/latest/download/Notepads-x64.zip";
 
         internal static readonly string InstallDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "Programs",
             "Notepads");
 
-        internal static readonly string TargetExecutable = Path.Combine(InstallDirectory, "Notepads.exe");
+        internal static readonly string PackageDirectory = Path.Combine(InstallDirectory, "Package");
+        internal static readonly string ManifestPath = Path.Combine(PackageDirectory, "AppxManifest.xml");
+        internal static readonly string TargetLauncher = Path.Combine(InstallDirectory, "Notepads.exe");
 
         [STAThread]
         private static void Main(string[] args)
         {
-            // 1. Instant check: If already installed (standalone exe or Appx protocol), launch immediately in milliseconds!
+            // 1. Instant check: If already installed and registered, launch immediately in milliseconds!
             if (IsAppInstalled())
             {
                 LaunchInstalledApp(args);
@@ -46,13 +48,34 @@ namespace Notepads.WebInstaller
 
         internal static bool IsAppInstalled()
         {
-            if (File.Exists(TargetExecutable)) return true;
+            if (!File.Exists(ManifestPath))
+            {
+                return false;
+            }
 
             try
             {
                 using (var key = Registry.ClassesRoot.OpenSubKey("notepads"))
                 {
-                    if (key != null) return true;
+                    if (key != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch { }
+
+            // If files exist but protocol registration is missing, auto-register silently
+            try
+            {
+                RegisterAppxPackage(ManifestPath);
+
+                using (var key = Registry.ClassesRoot.OpenSubKey("notepads"))
+                {
+                    if (key != null)
+                    {
+                        return true;
+                    }
                 }
             }
             catch { }
@@ -60,41 +83,48 @@ namespace Notepads.WebInstaller
             return false;
         }
 
+        internal static void RegisterAppxPackage(string manifestPath)
+        {
+            try
+            {
+                var psPsi = new ProcessStartInfo("powershell.exe",
+                    $"-ExecutionPolicy Bypass -NoProfile -NonInteractive -WindowStyle Hidden -Command \"Add-AppxPackage -Register '{manifestPath}' -ForceApplicationShutdown\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                var p = Process.Start(psPsi);
+                p?.WaitForExit(45000);
+            }
+            catch { }
+        }
+
         internal static void LaunchInstalledApp(string[] args)
         {
             try
             {
-                if (File.Exists(TargetExecutable))
-                {
-                    var psi = new ProcessStartInfo(TargetExecutable)
-                    {
-                        UseShellExecute = false,
-                        WorkingDirectory = InstallDirectory
-                    };
-
-                    if (args != null && args.Length > 0)
-                    {
-                        psi.Arguments = string.Join(" ", args.Select(a => $"\"{a}\""));
-                    }
-
-                    Process.Start(psi);
-                    return;
-                }
-
-                // If installed via UWP Appx package, launch via protocol or shell
-                string argStr = (args != null && args.Length > 0)
-                    ? string.Join(" ", args.Select(a => $"\"{a}\""))
-                    : string.Empty;
-
-                var protocolPsi = new ProcessStartInfo("notepads:", argStr)
+                var protocolPsi = new ProcessStartInfo("notepads:")
                 {
                     UseShellExecute = true
                 };
                 Process.Start(protocolPsi);
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show("Failed to launch Notepads: " + ex.Message, "Notepads", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Fallback via PowerShell Start-Process
+                try
+                {
+                    var psPsi = new ProcessStartInfo("powershell.exe", "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command \"Start-Process 'notepads:'\"")
+                    {
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+                    Process.Start(psPsi);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to launch Notepads: " + ex.Message, "Notepads", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }
@@ -191,11 +221,11 @@ namespace Notepads.WebInstaller
 
                         try
                         {
-                            await webClient.DownloadFileTaskAsync(new Uri("https://github.com/phwyverysad/Notepads/releases/latest/download/Notepads-x64.zip"), tempZipPath);
+                            await webClient.DownloadFileTaskAsync(new Uri(Program.PackageDownloadUrl), tempZipPath);
                         }
                         catch
                         {
-                            await webClient.DownloadFileTaskAsync(new Uri("https://github.com/0x7c13/Notepads/releases/latest/download/Notepads-x64.zip"), tempZipPath);
+                            await webClient.DownloadFileTaskAsync(new Uri(Program.FallbackDownloadUrl), tempZipPath);
                         }
                     }
                 }
@@ -205,44 +235,61 @@ namespace Notepads.WebInstaller
 
                 await Task.Run(() =>
                 {
-                    string extractDir = Path.Combine(Path.GetTempPath(), "Notepads-Extract-" + Guid.NewGuid());
+                    // 1. Prepare target directories
+                    Directory.CreateDirectory(Program.InstallDirectory);
+
+                    string tempExtractDir = Path.Combine(Path.GetTempPath(), "Notepads-Extract-" + Guid.NewGuid());
                     try
                     {
-                        Directory.CreateDirectory(extractDir);
-                        ZipFile.ExtractToDirectory(tempZipPath, extractDir);
+                        Directory.CreateDirectory(tempExtractDir);
+                        ZipFile.ExtractToDirectory(tempZipPath, tempExtractDir);
 
-                        // If zip contains .msix package, install silently via Add-AppxPackage
-                        string[] msixFiles = Directory.GetFiles(extractDir, "*.msix", SearchOption.AllDirectories);
-                        if (msixFiles.Length > 0)
+                        // Locate AppxManifest.xml in extracted contents
+                        string foundManifest = Directory.GetFiles(tempExtractDir, "AppxManifest.xml", SearchOption.AllDirectories).FirstOrDefault();
+                        if (string.IsNullOrEmpty(foundManifest))
                         {
-                            string msixPath = msixFiles[0];
-                            var psPsi = new ProcessStartInfo("powershell.exe", $"-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command \"Add-AppxPackage -Path '{msixPath}'\"")
+                            throw new FileNotFoundException("Cannot find AppxManifest.xml inside package.");
+                        }
+
+                        string sourcePackageDir = Path.GetDirectoryName(foundManifest);
+
+                        // Clean old package dir if exists
+                        if (Directory.Exists(Program.PackageDirectory))
+                        {
+                            try
                             {
-                                UseShellExecute = false,
-                                CreateNoWindow = true
-                            };
-                            var p = Process.Start(psPsi);
-                            p?.WaitForExit(30000);
+                                Directory.Delete(Program.PackageDirectory, true);
+                            }
+                            catch { }
                         }
+                        Directory.CreateDirectory(Program.PackageDirectory);
 
-                        // Also place binaries into LocalAppData Programs directory if available
-                        if (Directory.Exists(Program.InstallDirectory))
+                        // Copy all package files to PackageDirectory
+                        CopyDirectory(sourcePackageDir, Program.PackageDirectory);
+
+                        // 2. Register AppX package via PowerShell
+                        Program.RegisterAppxPackage(Program.ManifestPath);
+
+                        // 3. Place self as the launcher into InstallDirectory\Notepads.exe
+                        string currentExe = Process.GetCurrentProcess().MainModule.FileName;
+                        if (!string.Equals(currentExe, Program.TargetLauncher, StringComparison.OrdinalIgnoreCase))
                         {
-                            try { Directory.Delete(Program.InstallDirectory, true); } catch { }
+                            try
+                            {
+                                File.Copy(currentExe, Program.TargetLauncher, true);
+                            }
+                            catch { }
                         }
-                        Directory.CreateDirectory(Program.InstallDirectory);
 
-                        CopyDirectory(extractDir, Program.InstallDirectory);
+                        // 4. Create Desktop & Start Menu shortcuts
+                        CreateShortcuts(Program.TargetLauncher);
 
-                        // Create Desktop and Start Menu shortcuts
-                        CreateShortcuts(Program.TargetExecutable);
-
-                        // Register in App Paths for Win+R "notepads"
-                        RegisterAppPaths(Program.TargetExecutable);
+                        // 5. Register in App Paths for Win+R "notepads"
+                        RegisterAppPaths(Program.TargetLauncher);
                     }
                     finally
                     {
-                        try { Directory.Delete(extractDir, true); } catch { }
+                        try { Directory.Delete(tempExtractDir, true); } catch { }
                         if (tempZipPath != localZipFile && File.Exists(tempZipPath))
                         {
                             try { File.Delete(tempZipPath); } catch { }
@@ -253,10 +300,10 @@ namespace Notepads.WebInstaller
                 _lblStatus.Text = "การติดตั้งเสร็จสมบูรณ์! กำลังเปิดโปรแกรม...";
                 await Task.Delay(300);
 
-                // Launch application immediately
+                // 6. Launch Notepads immediately
                 Program.LaunchInstalledApp(_launchArgs);
 
-                // Close installer
+                // 7. Close installer
                 Close();
             }
             catch (Exception ex)
@@ -312,6 +359,7 @@ namespace Notepads.WebInstaller
                 shortcut.TargetPath = targetExe;
                 shortcut.WorkingDirectory = Path.GetDirectoryName(targetExe);
                 shortcut.Description = description;
+                shortcut.IconLocation = targetExe + ",0";
                 shortcut.Save();
             }
             catch { }
