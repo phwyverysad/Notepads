@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -6,6 +6,7 @@
 namespace Notepads.Controls.TextEditor
 {
     using System.Text;
+    using Notepads.Services;
     using Windows.UI.Text;
 
     public partial class TextEditorCore
@@ -210,6 +211,16 @@ namespace Notepads.Controls.TextEditor
                     zoomFactor: null,
                     disableAnimation: true);
             }
+        }
+
+        public void AddIndentation()
+        {
+            AddIndentation(AppSettingsService.EditorDefaultTabIndents);
+        }
+
+        public void RemoveIndentation()
+        {
+            RemoveIndentation(AppSettingsService.EditorDefaultTabIndents);
         }
     }
 }

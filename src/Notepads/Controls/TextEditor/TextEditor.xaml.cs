@@ -1,4 +1,4 @@
-﻿namespace Notepads.Controls.TextEditor
+namespace Notepads.Controls.TextEditor
 {
     using System;
     using System.Collections.Generic;
@@ -1125,6 +1125,203 @@
         {
             GoToPlaceholder.Dismiss();
             TextEditorCore.Focus(FocusState.Programmatic);
+        }
+
+        public void Undo()
+        {
+            if (TextEditorCore.IsEnabled && TextEditorCore.Document.CanUndo())
+            {
+                TextEditorCore.Document.Undo();
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void Redo()
+        {
+            if (TextEditorCore.IsEnabled && TextEditorCore.Document.CanRedo())
+            {
+                TextEditorCore.Document.Redo();
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void Cut()
+        {
+            if (TextEditorCore.IsEnabled && Mode == TextEditorMode.Editing)
+            {
+                TextEditorCore.Document.Selection.Cut();
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void Copy()
+        {
+            if (TextEditorCore.IsEnabled)
+            {
+                TextEditorCore.Document.Selection.Copy();
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void Paste()
+        {
+            if (TextEditorCore.IsEnabled && Mode == TextEditorMode.Editing)
+            {
+                TextEditorCore.Document.Selection.Paste(0);
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void Delete()
+        {
+            if (TextEditorCore.IsEnabled && Mode == TextEditorMode.Editing)
+            {
+                TextEditorCore.Document.Selection.SetText(Windows.UI.Text.TextSetOptions.None, string.Empty);
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void SelectAll()
+        {
+            if (TextEditorCore.IsEnabled)
+            {
+                TextEditorCore.Document.Selection.SetRange(0, TextEditorCore.GetText().Length);
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void InsertDateTime()
+        {
+            if (TextEditorCore.IsEnabled && Mode == TextEditorMode.Editing)
+            {
+                TextEditorCore.TryInsertNewLogEntry();
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void ToggleWordWrap()
+        {
+            TextEditorCore.TextWrapping = (TextEditorCore.TextWrapping == TextWrapping.Wrap ? TextWrapping.NoWrap : TextWrapping.Wrap);
+        }
+
+        public bool IsWordWrap()
+        {
+            return TextEditorCore.TextWrapping == TextWrapping.Wrap || TextEditorCore.TextWrapping == TextWrapping.WrapWholeWords;
+        }
+
+        public void WrapSelection(string prefix, string suffix)
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+
+            var selection = TextEditorCore.Document.Selection;
+            string selectedText = selection.Text ?? string.Empty;
+
+            if (string.IsNullOrEmpty(selectedText))
+            {
+                selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + suffix);
+                selection.StartPosition += prefix.Length;
+                selection.EndPosition = selection.StartPosition;
+            }
+            else
+            {
+                if (selectedText.StartsWith(prefix) && selectedText.EndsWith(suffix) && selectedText.Length >= (prefix.Length + suffix.Length))
+                {
+                    string unwrapped = selectedText.Substring(prefix.Length, selectedText.Length - prefix.Length - suffix.Length);
+                    selection.SetText(Windows.UI.Text.TextSetOptions.None, unwrapped);
+                }
+                else
+                {
+                    selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + selectedText + suffix);
+                }
+            }
+            TextEditorCore.Focus(FocusState.Programmatic);
+        }
+
+        public void FormatLinePrefix(string prefix)
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+
+            var selection = TextEditorCore.Document.Selection;
+            selection.Expand(Windows.UI.Text.TextRangeUnit.Paragraph);
+            string lineText = selection.Text ?? string.Empty;
+
+            string trimmed = lineText.TrimStart('#', '-', '*', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', ' ');
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + " " + trimmed);
+            }
+            else
+            {
+                selection.SetText(Windows.UI.Text.TextSetOptions.None, trimmed);
+            }
+            TextEditorCore.Focus(FocusState.Programmatic);
+        }
+
+        public void InsertTable(int rows, int cols)
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+
+            if (rows < 1) rows = 1;
+            if (cols < 1) cols = 1;
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine();
+            sb.Append("|");
+            for (int c = 1; c <= cols; c++) sb.Append($" หัวข้อ {c} |");
+            sb.AppendLine();
+            sb.Append("|");
+            for (int c = 1; c <= cols; c++) sb.Append(" --- |");
+            sb.AppendLine();
+            for (int r = 1; r <= rows; r++)
+            {
+                sb.Append("|");
+                for (int c = 1; c <= cols; c++) sb.Append(" ข้อความ |");
+                sb.AppendLine();
+            }
+            sb.AppendLine();
+
+            TextEditorCore.Document.Selection.SetText(Windows.UI.Text.TextSetOptions.None, sb.ToString());
+            TextEditorCore.Focus(FocusState.Programmatic);
+        }
+
+        public void ClearFormatting()
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+
+            var selection = TextEditorCore.Document.Selection;
+            string text = selection.Text;
+            if (string.IsNullOrEmpty(text))
+            {
+                selection.Expand(Windows.UI.Text.TextRangeUnit.Paragraph);
+                text = selection.Text ?? string.Empty;
+            }
+
+            string cleaned = System.Text.RegularExpressions.Regex.Replace(text, @"(\*\*|__)(.*?)\1", "$2");
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"(\*|_)(.*?)\1", "$2");
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"(~~)(.*?)\1", "$2");
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"(`)(.*?)\1", "$2");
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"^(\s*)[#>\-\*\+]\s+", "$1", System.Text.RegularExpressions.RegexOptions.Multiline);
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\[(.*?)\]\(.*?\)", "$1");
+
+            selection.SetText(Windows.UI.Text.TextSetOptions.None, cleaned);
+            TextEditorCore.Focus(FocusState.Programmatic);
+        }
+
+        public void Indent()
+        {
+            if (TextEditorCore.IsEnabled && Mode == TextEditorMode.Editing)
+            {
+                TextEditorCore.AddIndentation();
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void Unindent()
+        {
+            if (TextEditorCore.IsEnabled && Mode == TextEditorMode.Editing)
+            {
+                TextEditorCore.RemoveIndentation();
+                TextEditorCore.Focus(FocusState.Programmatic);
+            }
         }
     }
 }

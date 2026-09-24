@@ -273,5 +273,29 @@ namespace Notepads.Controls
         /// <returns>The identifier for the ConstrainColumn attached property.</returns>
         public static readonly DependencyProperty ConstrainColumnProperty =
             DependencyProperty.RegisterAttached("ConstrainColumn", typeof(bool), typeof(SetsView), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets the toolbar content to appear directly below the tab strip.
+        /// </summary>
+        public object SetsToolBar
+        {
+            get => GetValue(SetsToolBarProperty);
+            set => SetValue(SetsToolBarProperty, value);
+        }
+
+        public static readonly DependencyProperty SetsToolBarProperty =
+            DependencyProperty.Register(nameof(SetsToolBar), typeof(object), typeof(SetsView), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or sets the DataTemplate for the SetsToolBar.
+        /// </summary>
+        public DataTemplate SetsToolBarTemplate
+        {
+            get => (DataTemplate)GetValue(SetsToolBarTemplateProperty);
+            set => SetValue(SetsToolBarTemplateProperty, value);
+        }
+
+        public static readonly DependencyProperty SetsToolBarTemplateProperty =
+            DependencyProperty.Register(nameof(SetsToolBarTemplate), typeof(DataTemplate), typeof(SetsView), new PropertyMetadata(null));
     }
 }

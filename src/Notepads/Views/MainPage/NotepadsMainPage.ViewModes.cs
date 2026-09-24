@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -28,6 +28,7 @@ namespace Notepads.Views.MainPage
                     TitleBarReservedArea.Width = TitleBarReservedAreaCompactOverlayWidth;
                     ExitCompactOverlayButton.Visibility = Visibility.Visible;
                     MainMenuButton.Visibility = Visibility.Collapsed;
+                    if (TopToolBarBorder != null) TopToolBarBorder.Visibility = Visibility.Collapsed;
                     if (AppSettingsService.ShowStatusBar) ShowHideStatusBar(false);
                 }
             }
@@ -37,7 +38,8 @@ namespace Notepads.Views.MainPage
                 {
                     TitleBarReservedArea.Width = TitleBarReservedAreaDefaultWidth;
                     ExitCompactOverlayButton.Visibility = Visibility.Collapsed;
-                    MainMenuButton.Visibility = Visibility.Visible;
+                    MainMenuButton.Visibility = Visibility.Collapsed;
+                    if (TopToolBarBorder != null) TopToolBarBorder.Visibility = Visibility.Visible;
                     if (AppSettingsService.ShowStatusBar) ShowHideStatusBar(true);
                 }
             }

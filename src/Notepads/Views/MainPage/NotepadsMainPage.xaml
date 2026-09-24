@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="Notepads.Views.MainPage.NotepadsMainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -95,6 +95,7 @@
                                 <Button x:Name="MainMenuButton"
                                         Grid.Column="1"
                                         IsTabStop="False"
+                                        Visibility="Collapsed"
                                         Width="42"
                                         Height="{StaticResource SetsViewItemHeaderMinHeight}"
                                         Margin="0,0,-1,0"
@@ -233,6 +234,505 @@
                         <controls:SetsView.SetsEndHeader>
                             <Grid x:Name="TitleBarReservedArea" Background="Transparent" HorizontalAlignment="Center" Width="180" Height="32"/>
                         </controls:SetsView.SetsEndHeader>
+
+                        <controls:SetsView.SetsToolBar>
+                            <Border x:Name="TopToolBarBorder"
+                                    BorderThickness="0,0,0,1"
+                                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                    Height="36"
+                                    Padding="6,2,8,2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Left Section: File, Edit, View Menus -->
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Spacing="2">
+                                        <!-- File Menu -->
+                                        <Button Content="ไฟล์"
+                                                Height="30"
+                                                Padding="8,2,8,2"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                FontSize="12"
+                                                Style="{ThemeResource ButtonRevealStyle}">
+                                            <Button.Flyout>
+                                                <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                                                    <MenuFlyoutItem Text="แถบใหม่" Click="ToolBarMenuNewTabItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE710;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="N" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="หน้าต่างใหม่" Click="ToolBarMenuNewWindowItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE737;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="N" Modifiers="Control,Shift" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="แถบ Markdown ใหม่" Click="ToolBarMenuNewMarkdownTabItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8A5;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem Text="เปิด..." Click="ToolBarMenuOpenItem_Click" Icon="OpenFile">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="O" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuSaveItem" Text="บันทึก" Click="ToolBarMenuSaveItem_Click" Icon="Save">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="S" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuSaveAsItem" Text="บันทึกเป็น..." Click="ToolBarMenuSaveAsItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE792;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="S" Modifiers="Control,Shift" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="บันทึกทั้งหมด" Click="ToolBarMenuSaveAllItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA35;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem Text="ตั้งค่าหน้ากระดาษ..." Click="ToolBarMenuPageSetupItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7C5;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuPrintItem" Text="พิมพ์..." Click="ToolBarMenuPrintItem_Click" Icon="Print">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="P" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuCloseTabItem" Text="ปิดแถบ" Click="ToolBarMenuCloseTabItem_Click">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="W" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="ปิดหน้าต่าง" Click="ToolBarMenuCloseWindowItem_Click">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="W" Modifiers="Control,Shift" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="ออก" Click="ToolBarMenuExitItem_Click">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="F4" Modifiers="Menu" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                </MenuFlyout>
+                                            </Button.Flyout>
+                                        </Button>
+
+                                        <!-- Edit Menu -->
+                                        <Button Content="แก้ไข"
+                                                Height="30"
+                                                Padding="8,2,8,2"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                FontSize="12"
+                                                Style="{ThemeResource ButtonRevealStyle}">
+                                            <Button.Flyout>
+                                                <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuUndoItem" Text="เลิกทำ" Click="ToolBarMenuUndoItem_Click" Icon="Undo">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="Z" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuCutItem" Text="ตัด" Click="ToolBarMenuCutItem_Click" Icon="Cut">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="X" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuCopyItem" Text="คัดลอก" Click="ToolBarMenuCopyItem_Click" Icon="Copy">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="C" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuPasteItem" Text="วาง" Click="ToolBarMenuPasteItem_Click" Icon="Paste">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="V" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuDeleteItem" Text="ลบ" Click="ToolBarMenuDeleteItem_Click" Icon="Delete">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="Delete" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="ล้างการจัดรูปแบบ" Click="ToolBarMenuClearFormattingItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE75C;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem Text="ค้นหาด้วย Bing..." Click="ToolBarMenuSearchWithBingItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE721;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="E" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuFindItem" Text="ค้นหา..." Click="ToolBarMenuFindItem_Click" Icon="Find">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="F" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="ค้นหาถัดไป" Click="ToolBarMenuFindNextItem_Click">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="F3" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="ค้นหาก่อนหน้า" Click="ToolBarMenuFindPrevItem_Click">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="F3" Modifiers="Shift" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuReplaceItem" Text="แทนที่..." Click="ToolBarMenuReplaceItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8AB;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="H" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuGoToItem" Text="ไปที่..." Click="ToolBarMenuGoToItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8A7;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="G" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem x:Name="ToolBarMenuSelectAllItem" Text="เลือกทั้งหมด" Click="ToolBarMenuSelectAllItem_Click" Icon="SelectAll">
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="A" Modifiers="Control" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="เวลา/วันที่" Click="ToolBarMenuDateTimeItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC92;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="F5" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="แบบอักษร..." Click="ToolBarMenuFontSettingsItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8D2;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                </MenuFlyout>
+                                            </Button.Flyout>
+                                        </Button>
+
+                                        <!-- View Menu -->
+                                        <Button Content="มุมมอง"
+                                                Height="30"
+                                                Padding="8,2,8,2"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                FontSize="12"
+                                                Style="{ThemeResource ButtonRevealStyle}">
+                                            <Button.Flyout>
+                                                <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                                                    <MenuFlyoutSubItem Text="ซูม">
+                                                        <MenuFlyoutItem Text="ขยาย" Click="ToolBarMenuZoomInItem_Click">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE71F;"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                            <MenuFlyoutItem.KeyboardAccelerators>
+                                                                <KeyboardAccelerator Key="Add" Modifiers="Control" IsEnabled="False"/>
+                                                            </MenuFlyoutItem.KeyboardAccelerators>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutItem Text="ย่อ" Click="ToolBarMenuZoomOutItem_Click">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE720;"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                            <MenuFlyoutItem.KeyboardAccelerators>
+                                                                <KeyboardAccelerator Key="Subtract" Modifiers="Control" IsEnabled="False"/>
+                                                            </MenuFlyoutItem.KeyboardAccelerators>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutItem Text="คืนค่าการซูมเริ่มต้น" Click="ToolBarMenuRestoreZoomItem_Click">
+                                                            <MenuFlyoutItem.KeyboardAccelerators>
+                                                                <KeyboardAccelerator Key="Number0" Modifiers="Control" IsEnabled="False"/>
+                                                            </MenuFlyoutItem.KeyboardAccelerators>
+                                                        </MenuFlyoutItem>
+                                                    </MenuFlyoutSubItem>
+                                                    <ToggleMenuFlyoutItem x:Name="ToolBarMenuStatusBarToggleItem" Text="แถบสถานะ" Click="ToolBarMenuStatusBarToggleItem_Click" IsChecked="True"/>
+                                                    <ToggleMenuFlyoutItem x:Name="ToolBarMenuWordWrapToggleItem" Text="ตัดข้อความ" Click="ToolBarMenuWordWrapToggleItem_Click" IsChecked="True"/>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem Text="ดูตัวอย่าง Markdown" Click="ToolBarMenuToggleMarkdownPreviewItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE890;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="M" Modifiers="Control,Shift" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                </MenuFlyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <!-- Center Section: Markdown Formatting Controls -->
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <!-- Headings Dropdown -->
+                                        <Button x:Name="ToolBarHeadingButton"
+                                                Height="30"
+                                                Padding="6,2,6,2"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                ToolTipService.ToolTip="หัวเรื่อง (Heading)">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <TextBlock Text="หัวเรื่อง" FontSize="12" VerticalAlignment="Center"/>
+                                                <Border Background="{ThemeResource SystemControlHighlightListAccentLowBrush}" CornerRadius="2" Padding="2,0,2,0">
+                                                    <TextBlock Text="H1" FontWeight="Bold" FontSize="11" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE70D;" FontSize="9" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <Button.Flyout>
+                                                <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                                                    <MenuFlyoutItem Text="หัวเรื่อง 1" Tag="# " Click="HeadingMenuItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8D2;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="หัวเรื่อง 2" Tag="## " Click="HeadingMenuItem_Click"/>
+                                                    <MenuFlyoutItem Text="หัวเรื่อง 3" Tag="### " Click="HeadingMenuItem_Click"/>
+                                                    <MenuFlyoutItem Text="หัวเรื่อง 4" Tag="#### " Click="HeadingMenuItem_Click"/>
+                                                    <MenuFlyoutItem Text="หัวเรื่อง 5" Tag="##### " Click="HeadingMenuItem_Click"/>
+                                                    <MenuFlyoutItem Text="หัวเรื่อง 6" Tag="###### " Click="HeadingMenuItem_Click"/>
+                                                </MenuFlyout>
+                                            </Button.Flyout>
+                                        </Button>
+
+                                        <!-- Lists Dropdown -->
+                                        <Button x:Name="ToolBarListButton"
+                                                Height="30"
+                                                Padding="6,2,6,2"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                ToolTipService.ToolTip="รายการ (List)">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8FD;" FontSize="13" VerticalAlignment="Center"/>
+                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE70D;" FontSize="9" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <Button.Flyout>
+                                                <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                                                    <MenuFlyoutItem Text="รายการสัญลักษณ์แสดงหัวข้อย่อย (- )" Click="BulletListMenuItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8FD;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="รายการแบบมีลำดับเลข (1. )" Click="NumberedListMenuItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE805;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutSeparator />
+                                                    <MenuFlyoutItem Text="เพิ่มการเยื้อง" Click="IndentMenuItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7FD;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="Tab" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Text="ลดการเยื้อง" Click="UnindentMenuItem_Click">
+                                                        <MenuFlyoutItem.Icon>
+                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7FE;"/>
+                                                        </MenuFlyoutItem.Icon>
+                                                        <MenuFlyoutItem.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="Tab" Modifiers="Shift" IsEnabled="False"/>
+                                                        </MenuFlyoutItem.KeyboardAccelerators>
+                                                    </MenuFlyoutItem>
+                                                </MenuFlyout>
+                                            </Button.Flyout>
+                                        </Button>
+
+                                        <!-- Bold -->
+                                        <Button x:Name="ToolBarBoldButton"
+                                                Width="30"
+                                                Height="30"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                Click="ToolBarBoldButton_Click"
+                                                ToolTipService.ToolTip="ตัวหนา (Ctrl+B)">
+                                            <TextBlock Text="B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Button>
+
+                                        <!-- Italic -->
+                                        <Button x:Name="ToolBarItalicButton"
+                                                Width="30"
+                                                Height="30"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                Click="ToolBarItalicButton_Click"
+                                                ToolTipService.ToolTip="ตัวเอียง (Ctrl+I)">
+                                            <TextBlock Text="I" FontStyle="Italic" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Button>
+
+                                        <!-- Strikethrough -->
+                                        <Button x:Name="ToolBarStrikethroughButton"
+                                                Width="30"
+                                                Height="30"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                Click="ToolBarStrikethroughButton_Click"
+                                                ToolTipService.ToolTip="ขีดทับ (Strikethrough)">
+                                            <TextBlock Text="S" TextDecorations="Strikethrough" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Button>
+
+                                        <!-- Link -->
+                                        <Button x:Name="ToolBarLinkButton"
+                                                Width="30"
+                                                Height="30"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                Click="ToolBarLinkButton_Click"
+                                                ToolTipService.ToolTip="แทรกลิงก์ (Ctrl+K)">
+                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE71B;" FontSize="13"/>
+                                        </Button>
+
+                                        <!-- Table Dropdown -->
+                                        <Button x:Name="ToolBarTableButton"
+                                                Height="30"
+                                                Padding="6,2,6,2"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                ToolTipService.ToolTip="ตาราง (Table)">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE1A1;" FontSize="13" VerticalAlignment="Center"/>
+                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE70D;" FontSize="9" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <Button.Flyout>
+                                                <Flyout Placement="BottomEdgeAlignedLeft">
+                                                    <StackPanel Spacing="6" Padding="4">
+                                                        <TextBlock Text="แทรกตาราง" FontWeight="SemiBold" FontSize="12"/>
+                                                        <Grid RowSpacing="3" ColumnSpacing="3">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="24"/>
+                                                                <RowDefinition Height="24"/>
+                                                                <RowDefinition Height="24"/>
+                                                                <RowDefinition Height="24"/>
+                                                                <RowDefinition Height="24"/>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="24"/>
+                                                                <ColumnDefinition Width="24"/>
+                                                                <ColumnDefinition Width="24"/>
+                                                                <ColumnDefinition Width="24"/>
+                                                                <ColumnDefinition Width="24"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <!-- Row 0 -->
+                                                            <Button Grid.Row="0" Grid.Column="0" Tag="1x1" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="1 x 1"/>
+                                                            <Button Grid.Row="0" Grid.Column="1" Tag="1x2" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="1 x 2"/>
+                                                            <Button Grid.Row="0" Grid.Column="2" Tag="1x3" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="1 x 3"/>
+                                                            <Button Grid.Row="0" Grid.Column="3" Tag="1x4" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="1 x 4"/>
+                                                            <Button Grid.Row="0" Grid.Column="4" Tag="1x5" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="1 x 5"/>
+                                                            <!-- Row 1 -->
+                                                            <Button Grid.Row="1" Grid.Column="0" Tag="2x1" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="2 x 1"/>
+                                                            <Button Grid.Row="1" Grid.Column="1" Tag="2x2" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="2 x 2"/>
+                                                            <Button Grid.Row="1" Grid.Column="2" Tag="2x3" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="2 x 3"/>
+                                                            <Button Grid.Row="1" Grid.Column="3" Tag="2x4" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="2 x 4"/>
+                                                            <Button Grid.Row="1" Grid.Column="4" Tag="2x5" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="2 x 5"/>
+                                                            <!-- Row 2 -->
+                                                            <Button Grid.Row="2" Grid.Column="0" Tag="3x1" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="3 x 1"/>
+                                                            <Button Grid.Row="2" Grid.Column="1" Tag="3x2" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="3 x 2"/>
+                                                            <Button Grid.Row="2" Grid.Column="2" Tag="3x3" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="3 x 3"/>
+                                                            <Button Grid.Row="2" Grid.Column="3" Tag="3x4" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="3 x 4"/>
+                                                            <Button Grid.Row="2" Grid.Column="4" Tag="3x5" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="3 x 5"/>
+                                                            <!-- Row 3 -->
+                                                            <Button Grid.Row="3" Grid.Column="0" Tag="4x1" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="4 x 1"/>
+                                                            <Button Grid.Row="3" Grid.Column="1" Tag="4x2" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="4 x 2"/>
+                                                            <Button Grid.Row="3" Grid.Column="2" Tag="4x3" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="4 x 3"/>
+                                                            <Button Grid.Row="3" Grid.Column="3" Tag="4x4" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="4 x 4"/>
+                                                            <Button Grid.Row="3" Grid.Column="4" Tag="4x5" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="4 x 5"/>
+                                                            <!-- Row 4 -->
+                                                            <Button Grid.Row="4" Grid.Column="0" Tag="5x1" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="5 x 1"/>
+                                                            <Button Grid.Row="4" Grid.Column="1" Tag="5x2" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="5 x 2"/>
+                                                            <Button Grid.Row="4" Grid.Column="2" Tag="5x3" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="5 x 3"/>
+                                                            <Button Grid.Row="4" Grid.Column="3" Tag="5x4" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="5 x 4"/>
+                                                            <Button Grid.Row="4" Grid.Column="4" Tag="5x5" Width="24" Height="24" Padding="0" Click="ToolBarTableGridCell_Click" ToolTipService.ToolTip="5 x 5"/>
+                                                        </Grid>
+                                                        <Button Content="แทรกตารางเริ่มต้น (3 x 3)" HorizontalAlignment="Stretch" FontSize="11" Click="ToolBarInsertTableDefault_Click"/>
+                                                    </StackPanel>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                        </Button>
+
+                                        <!-- Clear Formatting -->
+                                        <Button x:Name="ToolBarClearFormatButton"
+                                                Width="30"
+                                                Height="30"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                Click="ToolBarClearFormatButton_Click"
+                                                ToolTipService.ToolTip="ล้างการจัดรูปแบบ">
+                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE75C;" FontSize="13"/>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <!-- Right Section: Preview and Settings -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="2">
+                                        <!-- Markdown Preview Toggle -->
+                                        <Button x:Name="ToolBarPreviewButton"
+                                                Width="32"
+                                                Height="30"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                Click="ToolBarPreviewButton_Click"
+                                                ToolTipService.ToolTip="ดูตัวอย่าง Markdown (Ctrl+Shift+M)">
+                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE890;" FontSize="14"/>
+                                        </Button>
+
+                                        <!-- Settings Button -->
+                                        <Button x:Name="ToolBarSettingsButton"
+                                                Width="32"
+                                                Height="30"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{ThemeResource ButtonRevealStyle}"
+                                                Click="ToolBarSettingsButton_Click"
+                                                ToolTipService.ToolTip="การตั้งค่า">
+                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" FontSize="14"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </controls:SetsView.SetsToolBar>
 
                     </controls:SetsView>
 
