@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -59,6 +59,11 @@ namespace Notepads
             LoggingService.LogInfo($"[{nameof(App)}] Started: Instance = {InstanceId} IsPrimaryInstance: {IsPrimaryInstance} IsGameBarWidget: {IsGameBarWidget}.");
 
             ApplicationSettingsStore.Write(SettingsKey.ActiveInstanceIdStr, App.InstanceId.ToString());
+
+            if (string.IsNullOrEmpty(Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride))
+            {
+                Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "th-TH";
+            }
 
             InitializeComponent();
 

@@ -1,0 +1,654 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppCloseSaveReminderDialog_CloseButtonText" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>AppCloseSaveReminderDialog: CloseButtonText.</comment>
+  </data>
+  <data name="AppCloseSaveReminderDialog_Content" xml:space="preserve">
+    <value>There are unsaved changes.</value>
+    <comment>AppCloseSaveReminderDialog: "Content" display text.</comment>
+  </data>
+  <data name="AppCloseSaveReminderDialog_PrimaryButtonText" xml:space="preserve">
+    <value>Save All &amp; Exit</value>
+    <comment>AppCloseSaveReminderDialog: PrimaryButtonText.</comment>
+  </data>
+  <data name="AppCloseSaveReminderDialog_SecondaryButtonText" xml:space="preserve">
+    <value>Discard &amp; Exit</value>
+    <comment>AppCloseSaveReminderDialog: SecondaryButtonText.</comment>
+  </data>
+  <data name="AppCloseSaveReminderDialog_Title" xml:space="preserve">
+    <value>Do you want to save the changes?</value>
+    <comment>AppCloseSaveReminderDialog: "Title" display text.</comment>
+  </data>
+  <data name="ContentSharing_FailureDisplayText" xml:space="preserve">
+    <value>Nothing to share because no text is selected and current document is empty.</value>
+    <comment>ContentSharing: Failure message when user trying to share empty content.</comment>
+  </data>
+  <data name="DiffViewer_Header_NewTextTittle.Text" xml:space="preserve">
+    <value>After your changes</value>
+    <comment>DiffViewer: Header's text for new text (After changes).</comment>
+  </data>
+  <data name="DiffViewer_Header_OldTextTittle.Text" xml:space="preserve">
+    <value>Before your changes</value>
+    <comment>DiffViewer: Header's text for old text (Before changes).</comment>
+  </data>
+  <data name="ErrorMessage_NotepadsFileSizeLimit" xml:space="preserve">
+    <value>Notepads does not support file greater than 1MB at this moment.</value>
+    <comment>ErrorMessage: NotepadsFileSizeLimit text.</comment>
+  </data>
+  <data name="FileOpenErrorDialog_Content" xml:space="preserve">
+    <value>Sorry, file "{0}" couldn't be opened: {1}</value>
+    <comment>FileOpenErrorDialog: "Content" display text, {0} stands for file path, {1} stands for error message. You can change the order but DO NOT REMOVE them from the string.</comment>
+  </data>
+  <data name="FileOpenErrorDialog_PrimaryButtonText" xml:space="preserve">
+    <value>Ok</value>
+    <comment>FileOpenErrorDialog: PrimaryButtonText.</comment>
+  </data>
+  <data name="FileOpenErrorDialog_Title" xml:space="preserve">
+    <value>File Open Error</value>
+    <comment>FileOpenErrorDialog: "Title" display text.</comment>
+  </data>
+  <data name="FileSaveErrorDialog_Content" xml:space="preserve">
+    <value>Sorry, file "{0}" couldn't be saved: {1}</value>
+    <comment>FileSaveErrorDialog: "Content" display text, {0} stands for file path, {1} stands for error message. You can change the order but DO NOT REMOVE them from the string.</comment>
+  </data>
+  <data name="FileSaveErrorDialog_PrimaryButtonText" xml:space="preserve">
+    <value>Ok</value>
+    <comment>FileSaveErrorDialog: PrimaryButtonText.</comment>
+  </data>
+  <data name="FileSaveErrorDialog_Title" xml:space="preserve">
+    <value>File Save Error</value>
+    <comment>FileSaveErrorDialog: "Title" display text.</comment>
+  </data>
+  <data name="FindAndReplace_DismissButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Close</value>
+    <comment>FindAndReplace: "Dismiss" button tool tip display text.</comment>
+  </data>
+  <data name="FindAndReplace_FindBar.PlaceholderText" xml:space="preserve">
+    <value>ค้นหา</value>
+    <comment>FindAndReplace: Find bar placeholder text.</comment>
+  </data>
+  <data name="FindAndReplace_NotificationMsg_NotFound" xml:space="preserve">
+    <value>ไม่พบข้อความ</value>
+    <comment>FindAndReplace: Notification message when target not found.</comment>
+  </data>
+  <data name="FindAndReplace_ReplaceAllButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>แทนที่ทั้งหมด (Ctrl+Alt+Enter)</value>
+    <comment>FindAndReplace: "Replace All" button tool tip display text.</comment>
+  </data>
+  <data name="FindAndReplace_ReplaceBar.PlaceholderText" xml:space="preserve">
+    <value>แทนที่</value>
+    <comment>FindAndReplace: Replace bar placeholder text.</comment>
+  </data>
+  <data name="FindAndReplace_ReplaceButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>แทนที่ (Alt+R)</value>
+    <comment>FindAndReplace: "Replace" button tool tip display text.</comment>
+  </data>
+  <data name="FindAndReplace_SearchForwardButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>ค้นหาถัดไป (F3)</value>
+    <comment>FindAndReplace: "Find Next" button tool tip display text.</comment>
+  </data>
+  <data name="FindAndReplace_SearchOptionButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>ตัวเลือกการค้นหา</value>
+    <comment>FindAndReplace: "SearchOptions" button tool tip display text.</comment>
+  </data>
+  <data name="FindAndReplace_SearchOptionToggleButton_MatchCase.Text" xml:space="preserve">
+    <value>ตรงตามตัวพิมพ์ใหญ่-เล็ก</value>
+    <comment>FindAndReplace: "Match Case" OptionToggleButton display text.</comment>
+  </data>
+  <data name="FindAndReplace_SearchOptionToggleButton_MatchWholeWord.Text" xml:space="preserve">
+    <value>ค้นหาทั้งคำ</value>
+    <comment>FindAndReplace: "Match Whole Word" OptionToggleButton display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Find.Text" xml:space="preserve">
+    <value>ค้นหา...</value>
+    <comment>MainMenu: "Find" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_New.Text" xml:space="preserve">
+    <value>แท็บใหม่</value>
+    <comment>MainMenu: "New" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Open.Text" xml:space="preserve">
+    <value>เปิด...</value>
+    <comment>MainMenu: "Open" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Print.Text" xml:space="preserve">
+    <value>พิมพ์...</value>
+    <comment>MainMenu: "Print" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Replace.Text" xml:space="preserve">
+    <value>แทนที่...</value>
+    <comment>MainMenu: "Replace" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Save.Text" xml:space="preserve">
+    <value>บันทึก</value>
+    <comment>MainMenu: "Save" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_SaveAll.Text" xml:space="preserve">
+    <value>บันทึกทั้งหมด</value>
+    <comment>MainMenu: "Save All" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_SaveAs.Text" xml:space="preserve">
+    <value>บันทึกเป็น...</value>
+    <comment>MainMenu: "Save As" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Settings.Text" xml:space="preserve">
+    <value>การตั้งค่า</value>
+    <comment>MainMenu: "Settings" button display text.</comment>
+  </data>
+  <data name="RevertAllChangesConfirmationDialog_CloseButtonText" xml:space="preserve">
+    <value>ยกเลิก</value>
+    <comment>RevertAllChangesConfirmationDialog: CloseButtonText.</comment>
+  </data>
+  <data name="RevertAllChangesConfirmationDialog_Content" xml:space="preserve">
+    <value>การเปลี่ยนแปลงทั้งหมดรวมถึงข้อความ การขึ้นบรรทัดใหม่ และการเข้ารหัสของ "{0}" จะถูกย้อนกลับ!</value>
+    <comment>RevertAllChangesConfirmationDialog: "Content" display text, {0} stands for file name. You can change the order but DO NOT REMOVE it from the string.</comment>
+  </data>
+  <data name="RevertAllChangesConfirmationDialog_PrimaryButtonText" xml:space="preserve">
+    <value>ใช่</value>
+    <comment>RevertAllChangesConfirmationDialog: PrimaryButtonText.</comment>
+  </data>
+  <data name="RevertAllChangesConfirmationDialog_Title" xml:space="preserve">
+    <value>คุณแน่ใจหรือไม่ว่าต้องการย้อนกลับการเปลี่ยนแปลงทั้งหมด?</value>
+    <comment>RevertAllChangesConfirmationDialog: "Title" display text.</comment>
+  </data>
+  <data name="SetCloseSaveReminderDialog_CloseButtonText" xml:space="preserve">
+    <value>ยกเลิก</value>
+    <comment>SetCloseSaveReminderDialog: CloseButtonText.</comment>
+  </data>
+  <data name="SetCloseSaveReminderDialog_Content" xml:space="preserve">
+    <value>บันทึกการเปลี่ยนแปลงของไฟล์ "{0}" หรือไม่?</value>
+    <comment>SetCloseSaveReminderDialog: "Content" display text.  {0} stands for file name/path. You can change the order but DO NOT REMOVE it from the string.</comment>
+  </data>
+  <data name="SetCloseSaveReminderDialog_PrimaryButtonText" xml:space="preserve">
+    <value>บันทึก</value>
+    <comment>SetCloseSaveReminderDialog: PrimaryButtonText.</comment>
+  </data>
+  <data name="SetCloseSaveReminderDialog_SecondaryButtonText" xml:space="preserve">
+    <value>ไม่บันทึก</value>
+    <comment>SetCloseSaveReminderDialog: SecondaryButtonText.</comment>
+  </data>
+  <data name="SetCloseSaveReminderDialog_Title" xml:space="preserve">
+    <value>ต้องการบันทึกการเปลี่ยนแปลงหรือไม่?</value>
+    <comment>SetCloseSaveReminderDialog: "Title" display text.</comment>
+  </data>
+  <data name="Tab_ContextFlyout_CloseButtonDisplayText" xml:space="preserve">
+    <value>ปิดแท็บ</value>
+    <comment>Tab: ContextFlyout "Close" button display text.</comment>
+  </data>
+  <data name="Tab_ContextFlyout_CloseOthersButtonDisplayText" xml:space="preserve">
+    <value>ปิดแท็บอื่น</value>
+    <comment>Tab: ContextFlyout "Close Others" button display text.</comment>
+  </data>
+  <data name="Tab_ContextFlyout_CloseRightButtonDisplayText" xml:space="preserve">
+    <value>ปิดแท็บทางขวา</value>
+    <comment>Tab: ContextFlyout "Close to the Right" button display text.</comment>
+  </data>
+  <data name="Tab_ContextFlyout_CloseSavedButtonDisplayText" xml:space="preserve">
+    <value>ปิดแท็บที่บันทึกแล้ว</value>
+    <comment>Tab: ContextFlyout "Close Saved" button display text.</comment>
+  </data>
+  <data name="Tab_ContextFlyout_CopyFullPathButtonDisplayText" xml:space="preserve">
+    <value>คัดลอกเส้นทางแบบเต็ม</value>
+    <comment>Tab: ContextFlyout "Copy Full Path" button display text.</comment>
+  </data>
+  <data name="Tab_ContextFlyout_OpenContainingFolderButtonDisplayText" xml:space="preserve">
+    <value>เปิดโฟลเดอร์ที่จัดเก็บ</value>
+    <comment>Tab: ContextFlyout "Open Containing Folder" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_CopyButtonDisplayText" xml:space="preserve">
+    <value>คัดลอก</value>
+    <comment>TextEditor: ContextFlyout "Copy" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_CutButtonDisplayText" xml:space="preserve">
+    <value>ตัด</value>
+    <comment>TextEditor: ContextFlyout "Cut" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_PasteButtonDisplayText" xml:space="preserve">
+    <value>วาง</value>
+    <comment>TextEditor: ContextFlyout "Paste" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_PreviewToggleDisplay_Text" xml:space="preserve">
+    <value>สลับมุมมองตัวอย่าง Markdown</value>
+    <comment>TextEditor: ContextFlyout "Toggle Preview" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_RedoButtonDisplayText" xml:space="preserve">
+    <value>ทำซ้ำ</value>
+    <comment>TextEditor: ContextFlyout "Redo" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_SelectAllButtonDisplayText" xml:space="preserve">
+    <value>เลือกทั้งหมด</value>
+    <comment>TextEditor: ContextFlyout "Select All" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_ShareButtonDisplayText" xml:space="preserve">
+    <value>แชร์</value>
+    <comment>TextEditor: ContextFlyout "Share" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_ShareSelectedButtonDisplayText" xml:space="preserve">
+    <value>แชร์ส่วนที่เลือก</value>
+    <comment>TextEditor: ContextFlyout "Share Selected" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_UndoButtonDisplayText" xml:space="preserve">
+    <value>เลิกทำ</value>
+    <comment>TextEditor: ContextFlyout "Undo" button display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_WordWrapButtonDisplayText" xml:space="preserve">
+    <value>การตัดคำ</value>
+    <comment>TextEditor: ContextFlyout "Word Wrap" toggle button display text.</comment>
+  </data>
+  <data name="TextEditor_DefaultNewFileName" xml:space="preserve">
+    <value>ไม่มีชื่อ.txt</value>
+    <comment>TextEditor: Default file name for new document.</comment>
+  </data>
+  <data name="TextEditor_LineColumnIndicator_FullText" xml:space="preserve">
+    <value>บรรทัด {0}, คอลัมน์ {1} (เลือก {2} {3})</value>
+    <comment>TextEditor: LineColumnIndicator display text when character(s) is(are) selected. {0} stands for line number, {1} stands for column index, {2} stands for number of selected characters, {3} stands for "selected" (based on singular and plural). You can change the order but DO NOT REMOVE them from the string.</comment>
+  </data>
+  <data name="TextEditor_LineColumnIndicator_ShortText" xml:space="preserve">
+    <value>บรรทัด {0}, คอลัมน์ {1}</value>
+    <comment>TextEditor: LineColumnIndicator display text when no character is selected. {0} stands for line number, {1} stands for column index. You can change the order but DO NOT REMOVE them from the string.</comment>
+  </data>
+  <data name="TextEditor_ModificationIndicator_MenuFlyoutItem_PreviewTextChanges.Text" xml:space="preserve">
+    <value>แสดงตัวอย่างการเปลี่ยนแปลงข้อความ</value>
+    <comment>TextEditor: ModificationIndicator "PreviewTextChanges" MenuFlyoutItem display text. DiffViewer will be shown upon selection.</comment>
+  </data>
+  <data name="TextEditor_ModificationIndicator_MenuFlyoutItem_RevertAllChanges.Text" xml:space="preserve">
+    <value>ย้อนกลับการเปลี่ยนแปลงทั้งหมด</value>
+    <comment>TextEditor: ModificationIndicator "RevertAllChanges" MenuFlyoutItem display text. All changes including text, encoding and line ending will be reverted to original state upon selection.</comment>
+  </data>
+  <data name="TextEditor_ModificationIndicator_Text" xml:space="preserve">
+    <value>แก้ไขแล้ว</value>
+    <comment>TextEditor: ModificationIndicator display text.</comment>
+  </data>
+  <data name="TextEditor_NotificationMsg_FileNameOrPathCopied" xml:space="preserve">
+    <value>คัดลอกแล้ว</value>
+    <comment>TextEditor: Notification message when user tap or click file name/path on status bar (Bottom left corner).</comment>
+  </data>
+  <data name="TextEditor_NotificationMsg_FileSaved" xml:space="preserve">
+    <value>บันทึกแล้ว</value>
+    <comment>TextEditor: Notification message when file has been saved successfully.</comment>
+  </data>
+  <data name="TextEditor_NotificationMsg_ExitFullScreenHint" xml:space="preserve">
+    <value>กด F11 เพื่อออกจากเต็มหน้าจอ</value>
+    <comment>TextEditor: Notification message when app entering full screen mode.</comment>
+  </data>
+  <data name="TextEditor_FileModifiedOutsideIndicator_MenuFlyoutItem_ReloadFileFromDisk.Text" xml:space="preserve">
+    <value>โหลดไฟล์ซ้ำจากดิสก์</value>
+    <comment>TextEditor: FileModifiedOutsideIndicator "ReloadFileFromDisk" MenuFlyoutItem display text.</comment>
+  </data>
+  <data name="TextEditor_FileModifiedOutsideIndicator_ToolTip" xml:space="preserve">
+    <value>ไฟล์ถูกแก้ไขจากภายนอก</value>
+    <comment>TextEditor: FileModifiedOutsideIndicator tool tip display text.</comment>
+  </data>
+  <data name="TextEditor_FileRenamedMovedOrDeletedIndicator_ToolTip" xml:space="preserve">
+    <value>ไฟล์ถูกย้าย เปลี่ยนชื่อ หรือลบแล้ว!</value>
+    <comment>TextEditor: FileRenamedMovedOrDeletedIndicator tool tip display text.</comment>
+  </data>
+  <data name="TextEditor_NotificationMsg_FileReloaded" xml:space="preserve">
+    <value>โหลดไฟล์ซ้ำแล้ว</value>
+    <comment>TextEditor: Notification message when file has been reloaded successfully.</comment>
+  </data>
+  <data name="App_EnterCompactOverlayMode_Text" xml:space="preserve">
+    <value>โหมดซ้อนทับกะทัดรัด</value>
+    <comment>App: "Compact Overlay" display text</comment>
+  </data>
+  <data name="App_EnterFullScreenMode_Text" xml:space="preserve">
+    <value>เต็มหน้าจอ</value>
+    <comment>App: "Full Screen" display text</comment>
+  </data>
+  <data name="App_ExitCompactOverlayMode_Text" xml:space="preserve">
+    <value>ออกจากโหมดซ้อนทับกะทัดรัด</value>
+    <comment>App: "Exit Compact Overlay" display text</comment>
+  </data>
+  <data name="App_ExitFullScreenMode_Text" xml:space="preserve">
+    <value>ออกจากเต็มหน้าจอ</value>
+    <comment>App: "Exit Full Screen" display text</comment>
+  </data>
+  <data name="TextEditor_LineColumnIndicator_FullText_PluralSelectedWord" xml:space="preserve">
+    <value>อักขระ</value>
+    <comment>TextEditor: Plural form for the selected word count indicator. Leave it with the same value of SingularSelectedWord if your language doesen't have a plural form.</comment>
+  </data>
+  <data name="TextEditor_LineColumnIndicator_FullText_SingularSelectedWord" xml:space="preserve">
+    <value>อักขระ</value>
+    <comment>TextEditor: Singular form for the selected word count indicator.</comment>
+  </data>
+  <data name="App_DragAndDrop_UIOverride_Caption_MoveTabHere" xml:space="preserve">
+    <value>ย้ายแท็บมาที่นี่</value>
+    <comment>App: DragAndDrop UIOverride Caption: "Move tab here" display text</comment>
+  </data>
+  <data name="App_DragAndDrop_UIOverride_Caption_OpenWithNotepads" xml:space="preserve">
+    <value>เปิดด้วย Notepads</value>
+    <comment>App: DragAndDrop UIOverride Caption: "Open with Notepads" display text</comment>
+  </data>
+  <data name="App_ShadowWindowIndicator_Description" xml:space="preserve">
+    <value>นี่คือหน้าต่างเงาของ Notepads ซึ่งจะปิดใช้งานภาพรวมเซสชันและการตั้งค่า</value>
+    <comment>App: ShadowWindowIndicator Description display text.</comment>
+  </data>
+  <data name="TextEditor_NotificationMsg_FileAlreadyOpened" xml:space="preserve">
+    <value>ไฟล์นี้เปิดอยู่แล้ว!</value>
+    <comment>TextEditor: Notification message when file has been opened in current app instance.</comment>
+  </data>
+  <data name="JumpList_Tasks_NewWindow_Title" xml:space="preserve">
+    <value>หน้าต่างใหม่</value>
+    <comment>JumpList: Windows Taskbar JumpList Items "New window" item display text.</comment>
+  </data>
+  <data name="JumpList_Tasks_NewWindow_Description" xml:space="preserve">
+    <value>เปิดหน้าต่างใหม่</value>
+    <comment>JumpList: Windows Taskbar JumpList Items "New window" item description display text.</comment>
+  </data>
+  <data name="MainMenu_Button_New_Window.Text" xml:space="preserve">
+    <value>หน้าต่างใหม่</value>
+    <comment>MainMenu: "New Window" button display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Open_Recent.Text" xml:space="preserve">
+    <value>ล่าสุด</value>
+    <comment>MainMenu: "Open Recent" button display text.</comment>
+  </data>
+  <data name="GoTo_GoToBar.PlaceholderText" xml:space="preserve">
+    <value>ไปยังบรรทัดที่</value>
+    <comment>GoTo: Go to bar placeholder text.</comment>
+  </data>
+  <data name="GoTo_NotificationMsg_InputError_ExceedInputLimit" xml:space="preserve">
+    <value>หมายเลขบรรทัดเกินจำนวนบรรทัดทั้งหมด!</value>
+    <comment>GoTo: Notification message when input exceeds input limit.</comment>
+  </data>
+  <data name="GoTo_NotificationMsg_InputError_InvalidInput" xml:space="preserve">
+    <value>พิมพ์ได้เฉพาะตัวเลขเท่านั้น!</value>
+    <comment>GoTo: Notification message when invalid input entered.</comment>
+  </data>
+  <data name="GoTo_SearchButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>ไปยังบรรทัดที่</value>
+    <comment>GoTo: "Search" button tool tip display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_WebSearchButtonDisplayText" xml:space="preserve">
+    <value>ค้นหาด้วย Bing</value>
+    <comment>TextEditor: ContextFlyout "Web Search" button display text.</comment>
+  </data>
+  <data name="TextEditor_FontZoomIndicator_FlyoutItem_RestoreDefaultZoom.Label" xml:space="preserve">
+    <value>คืนค่าการย่อ/ขยายเริ่มต้น</value>
+    <comment>TextEditor: FontZoomIndicator "Restore Default Zoom" FlyoutItem display text. Restores to default zoom for selected text editor.</comment>
+  </data>
+  <data name="TextEditor_FontZoomIndicator_FlyoutItem_ZoomIn.Label" xml:space="preserve">
+    <value>ขยาย</value>
+    <comment>TextEditor: FontZoomIndicator "ZoomIn" FlyoutItem display text. Zooms in selected text editor text.</comment>
+  </data>
+  <data name="TextEditor_FontZoomIndicator_FlyoutItem_ZoomOut.Label" xml:space="preserve">
+    <value>ย่อ</value>
+    <comment>TextEditor: FontZoomIndicator "ZoomOut" FlyoutItem display text. Zooms out selected text editor text.</comment>
+  </data>
+  <data name="GoTo_GoToBarLabel.Text" xml:space="preserve">
+    <value>ไปยัง:</value>
+    <comment>GoTo: Go to bar label</comment>
+  </data>
+  <data name="MainMenu_Button_PrintAll.Text" xml:space="preserve">
+    <value>พิมพ์ทั้งหมด...</value>
+    <comment>MainMenu: "Print All" button display text.</comment>
+  </data>
+  <data name="Print_ErrorMsg_DecimalOutOfRange" xml:space="preserve">
+    <value>ยอมรับทศนิยมไม่เกินหนึ่งตำแหน่ง</value>
+    <comment>Print: Error message when decimal places for margin entry exceeds limit.</comment>
+  </data>
+  <data name="Print_ErrorMsg_ValueOutOfRange" xml:space="preserve">
+    <value>ค่านอกช่วงที่กำหนด</value>
+    <comment>Print: Error message when value for margin entry exceeds limit.</comment>
+  </data>
+  <data name="Print_FooterEntry_Title" xml:space="preserve">
+    <value>ส่วนท้ายกระดาษ</value>
+    <comment>Print: PrintManager custom option "FooterText" title.</comment>
+  </data>
+  <data name="Print_HeaderEntry_Title" xml:space="preserve">
+    <value>ส่วนหัวกระดาษ</value>
+    <comment>Print: PrintManager custom option "HeaderText" title.</comment>
+  </data>
+  <data name="Print_LeftMarginEntry_Title" xml:space="preserve">
+    <value>ระยะขอบแนวนอน (เป็น %)</value>
+    <comment>Print: PrintManager custom option "LeftMargin" title.</comment>
+  </data>
+  <data name="Print_MarginEntry_Description" xml:space="preserve">
+    <value>คิดเป็น % ของความกว้างหน้ากระดาษ</value>
+    <comment>Print: PrintManager custom option "LeftMargin" and "TopMargin" description.</comment>
+  </data>
+  <data name="Print_NotificationMsg_PrintError" xml:space="preserve">
+    <value>เกิดข้อผิดพลาดในการพิมพ์:</value>
+    <comment>Print: Notification message when error occurs while showing print ui.</comment>
+  </data>
+  <data name="Print_NotificationMsg_PrintFailed" xml:space="preserve">
+    <value>การพิมพ์ล้มเหลว</value>
+    <comment>Print: Notification message on print failure.</comment>
+  </data>
+  <data name="Print_NotificationMsg_PrintNotSupported" xml:space="preserve">
+    <value>อุปกรณ์นี้ไม่รองรับการพิมพ์</value>
+    <comment>Print: Notification message when printing attempted in a non-supported device.</comment>
+  </data>
+  <data name="Print_TopMarginEntry_Title" xml:space="preserve">
+    <value>ระยะขอบแนวตั้ง (เป็น %)</value>
+    <comment>Print: PrintManager custom option "TopMargin" title.</comment>
+  </data>
+  <data name="FindAndReplace_SearchOptionToggleButton_UseRegex.Text" xml:space="preserve">
+    <value>ใช้นิพจน์ปกติ (Regex)</value>
+    <comment>FindAndReplace: "Use Regular Expression" OptionToggleButton display text.</comment>
+  </data>
+  <data name="MainMenu_Button_Open_Recent_ClearRecentlyOpenedSubItem_Text" xml:space="preserve">
+    <value>ล้างรายการล่าสุด</value>
+    <comment>MainMenu: "Open Recent" button ClearRecentlyOpenedSubItem display text.</comment>
+  </data>
+  <data name="TextEditor_EncodingIndicator_FlyoutItem_MoreEncodings" xml:space="preserve">
+    <value>การเข้ารหัสเพิ่มเติม</value>
+    <comment>TextEditor: EncodingIndicator "More Encodings" FlyoutItem display text.</comment>
+  </data>
+  <data name="TextEditor_EncodingIndicator_FlyoutItem_ReopenWithEncoding" xml:space="preserve">
+    <value>เปิดใหม่ด้วยการเข้ารหัส</value>
+    <comment>TextEditor: EncodingIndicator "Reopen with Encoding" FlyoutItem display text.</comment>
+  </data>
+  <data name="TextEditor_EncodingIndicator_FlyoutItem_SaveWithEncoding" xml:space="preserve">
+    <value>บันทึกด้วยการเข้ารหัส</value>
+    <comment>TextEditor: EncodingIndicator "Save with Encoding" FlyoutItem display text.</comment>
+  </data>
+  <data name="FindAndReplace_NotificationMsg_InvalidRegex" xml:space="preserve">
+    <value>นิพจน์ปกติไม่ถูกต้อง!</value>
+    <comment>FindAndReplace: Notification message when regular expression text is invalid.</comment>
+  </data>
+  <data name="TextEditor_EncodingIndicator_FlyoutItem_AutoGuessEncoding" xml:space="preserve">
+    <value>ตรวจหาการเข้ารหัสอัตโนมัติ</value>
+    <comment>TextEditor: EncodingIndicator "Auto Guess Encoding" FlyoutItem display text.</comment>
+  </data>
+  <data name="TextEditor_NotificationMsg_EncodingCannotBeDetermined" xml:space="preserve">
+    <value>ไม่สามารถระบุการเข้ารหัสได้</value>
+    <comment>TextEditor: Notification message when file's encoding cannot be determined.</comment>
+  </data>
+  <data name="FindAndReplace_SearchBackwardButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>ค้นหาก่อนหน้า (Shift+F3)</value>
+    <comment>FindAndReplace: "Find Previous" button tool tip display text.</comment>
+  </data>
+  <data name="FindAndReplace_ToggleReplaceModeButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>สลับโหมดแทนที่</value>
+    <comment>FindAndReplace: "Toggle Replace Mode" button tool tip display text.</comment>
+  </data>
+  <data name="TextEditor_ContextFlyout_RightToLeftReadingOrderButtonDisplayText" xml:space="preserve">
+    <value>ลำดับการอ่านจากขวาไปซ้าย</value>
+    <comment>TextEditor: ContextFlyout "Right-to-Left Reading order" toggle button display text.</comment>
+  </data>
+  <data name="FontStyle_Italic" xml:space="preserve">
+    <value>ตัวเอียง</value>
+    <comment>FontStyle: "Italic"</comment>
+  </data>
+  <data name="FontStyle_Normal" xml:space="preserve">
+    <value>ปกติ</value>
+    <comment>FontStyle: "Normal"</comment>
+  </data>
+  <data name="FontStyle_Oblique" xml:space="preserve">
+    <value>ตัวเอน</value>
+    <comment>FontStyle: "Oblique"</comment>
+  </data>
+  <data name="FontWeight_Black" xml:space="preserve">
+    <value>หนามาก</value>
+    <comment>FontWeight: "Black"</comment>
+  </data>
+  <data name="FontWeight_Bold" xml:space="preserve">
+    <value>หนา</value>
+    <comment>FontWeight: "Bold"</comment>
+  </data>
+  <data name="FontWeight_ExtraBlack" xml:space="preserve">
+    <value>ดำทึบ</value>
+    <comment>FontWeight: "ExtraBlack"</comment>
+  </data>
+  <data name="FontWeight_ExtraBold" xml:space="preserve">
+    <value>หนาพิเศษ</value>
+    <comment>FontWeight: "ExtraBold"</comment>
+  </data>
+  <data name="FontWeight_ExtraLight" xml:space="preserve">
+    <value>บางพิเศษ</value>
+    <comment>FontWeight: "ExtraLight"</comment>
+  </data>
+  <data name="FontWeight_Light" xml:space="preserve">
+    <value>บาง</value>
+    <comment>FontWeight: "Light"</comment>
+  </data>
+  <data name="FontWeight_Medium" xml:space="preserve">
+    <value>ปานกลาง</value>
+    <comment>FontWeight: "Medium"</comment>
+  </data>
+  <data name="FontWeight_Normal" xml:space="preserve">
+    <value>ปกติ</value>
+    <comment>FontWeight: "Normal"</comment>
+  </data>
+  <data name="FontWeight_SemiBold" xml:space="preserve">
+    <value>กึ่งหนา</value>
+    <comment>FontWeight: "SemiBold"</comment>
+  </data>
+  <data name="FontWeight_SemiLight" xml:space="preserve">
+    <value>กึ่งบาง</value>
+    <comment>FontWeight: "SemiLight"</comment>
+  </data>
+  <data name="FontWeight_Thin" xml:space="preserve">
+    <value>บางมาก</value>
+    <comment>FontWeight: "Thin"</comment>
+  </data>
+  <data name="FileRenameDialog_CloseButtonText" xml:space="preserve">
+    <value>ยกเลิก</value>
+    <comment>FileRenameDialog: CloseButtonText.</comment>
+  </data>
+  <data name="FileRenameDialog_PrimaryButtonText" xml:space="preserve">
+    <value>บันทึก</value>
+    <comment>FileRenameDialog: PrimaryButtonText.</comment>
+  </data>
+  <data name="FileRenameDialog_Title" xml:space="preserve">
+    <value>เปลี่ยนชื่อ</value>
+    <comment>FileRenameDialog: "Title" display text.</comment>
+  </data>
+  <data name="InvalidFilenameError_ContainsInvalidCharacters" xml:space="preserve">
+    <value>ชื่อไฟล์ต้องไม่มีอักขระที่ไม่อนุญาต</value>
+    <comment>InvalidFilenameError: Filename contains invalid characters.</comment>
+  </data>
+  <data name="InvalidFilenameError_ContainsLeadingSpaces" xml:space="preserve">
+    <value>ชื่อไฟล์ต้องไม่มีช่องว่างนำหน้า</value>
+    <comment>InvalidFilenameError: Filename contains leading spaces.</comment>
+  </data>
+  <data name="InvalidFilenameError_ContainsTrailingSpaces" xml:space="preserve">
+    <value>ชื่อไฟล์ต้องไม่มีช่องว่างต่อท้าย</value>
+    <comment>InvalidFilenameError: Filename contains trailing spaces.</comment>
+  </data>
+  <data name="InvalidFilenameError_EmptyOrAllWhitespace" xml:space="preserve">
+    <value>ชื่อไฟล์ต้องไม่ว่างเปล่าหรือเป็นช่องว่างทั้งหมด</value>
+    <comment>InvalidFilenameError: Filename is empty or contains all whitespace.</comment>
+  </data>
+  <data name="InvalidFilenameError_InvalidOrNotAllowed" xml:space="preserve">
+    <value>ชื่อไฟล์ไม่ถูกต้องหรือไม่อนุญาต</value>
+    <comment>InvalidFilenameError: Filename is invalid or not allowed.</comment>
+  </data>
+  <data name="InvalidFilenameError_TooLong" xml:space="preserve">
+    <value>ชื่อไฟล์ต้องยาวไม่เกิน 255 ตัวอักษร</value>
+    <comment>InvalidFilenameError: Filename is longer than 255 characters.</comment>
+  </data>
+  <data name="Tab_ContextFlyout_RenameButtonDisplayText" xml:space="preserve">
+    <value>เปลี่ยนชื่อ</value>
+    <comment>TextEditor: ContextFlyout "Rename" button display text.</comment>
+  </data>
+  <data name="TextEditor_NotificationMsg_FileRenamed" xml:space="preserve">
+    <value>เปลี่ยนชื่อสำเร็จ</value>
+    <comment>TextEditor: Notification message when file has been renamed successfully.</comment>
+  </data>
+  <data name="FileRenameError_EmptyFileExtension" xml:space="preserve">
+    <value>ยังไม่รองรับนามสกุลไฟล์ที่ว่างเปล่าในขณะนี้</value>
+    <comment>FileRenameError: Empty file extension is not currently supported.</comment>
+  </data>
+  <data name="FileRenameError_UnsupportedFileExtension" xml:space="preserve">
+    <value>ยังไม่รองรับนามสกุลไฟล์ "{0}" ในขณะนี้</value>
+    <comment>FileRenameError: Extension is not currently supported. {0} stands for the file extension string.</comment>
+  </data>
+  <data name="SessionCorruptionErrorDialog_CloseButtonText" xml:space="preserve">
+    <value>ปิด</value>
+    <comment>SessionCorruptionErrorDialog: CloseButtonText.</comment>
+  </data>
+  <data name="SessionCorruptionErrorDialog_Content" xml:space="preserve">
+    <value>ไม่สามารถกู้คืนข้อมูลจากเซสชันล่าสุดได้เนื่องจากข้อมูลเสียหาย โปรดสำรองไฟล์ที่ยังไม่ได้บันทึก (*.txt) ในโฟลเดอร์ของเซสชัน</value>
+    <comment>SessionCorruptionErrorDialog: "Content" display text.</comment>
+  </data>
+  <data name="SessionCorruptionErrorDialog_PrimaryButtonText" xml:space="preserve">
+    <value>เปิดโฟลเดอร์สำรองข้อมูลเซสชัน</value>
+    <comment>SessionCorruptionErrorDialog: PrimaryButtonText.</comment>
+  </data>
+  <data name="SessionCorruptionErrorDialog_Title" xml:space="preserve">
+    <value>คำเตือน</value>
+    <comment>SessionCorruptionErrorDialog: "Title" display text.</comment>
+  </data>
+</root>
