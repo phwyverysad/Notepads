@@ -1,0 +1,374 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutPage_DependenciesAndReferences_Title.Text" xml:space="preserve">
+    <value>การพึ่งพาและการอ้างอิง</value>
+    <comment>AboutPage DependenciesAndReferences Title display text.</comment>
+  </data>
+  <data name="AboutPage_Disclaimer_Content.Text" xml:space="preserve">
+    <value>ซอฟต์แวร์นี้จัดทำขึ้น "ตามสภาพ" โดยไม่มีการรับประกันใดๆ ไม่ว่าโดยชัดแจ้งหรือโดยปริยาย ผู้เขียนหรือผู้ถือลิขสิทธิ์จะไม่รับผิดชอบต่อการเรียกร้อง ค่าเสียหาย หรือความรับผิดชอบอื่นใดอันเกิดจากซอฟต์แวร์นี้</value>
+    <comment>AboutPage Disclaimer Content display text. (The MIT License Disclaimer)</comment>
+  </data>
+  <data name="AboutPage_Disclaimer_Title.Text" xml:space="preserve">
+    <value>ข้อจำกัดความรับผิดชอบ</value>
+    <comment>AboutPage Disclaimer Title display text.</comment>
+  </data>
+  <data name="AboutPage_NotepadsShortDescription.Text" xml:space="preserve">
+    <value>โปรแกรมแก้ไขข้อความฟรีและโอเพ่นซอร์ส ออกแบบและพัฒนาโดย Jackie (Jiaqi) Liu</value>
+    <comment>AboutPage NotepadsShortDescription display text.</comment>
+  </data>
+  <data name="AboutPage_Notepads_AuthorContactsTitle.Text" xml:space="preserve">
+    <value>ติดต่อผู้พัฒนา:</value>
+    <comment>AboutPage Notepads AuthorContacts Title display text.</comment>
+  </data>
+  <data name="AboutPage_Notepads_IssueAndFeatureRequestsTitle.Text" xml:space="preserve">
+    <value>รายงานปัญหาและขอฟีเจอร์เพิ่มเติม:</value>
+    <comment>AboutPage Notepads IssueAndFeatureRequests Title display text.</comment>
+  </data>
+  <data name="AboutPage_Notepads_SourceCodeTitle.Text" xml:space="preserve">
+    <value>ซอร์สโค้ดพร้อมใช้งานบน GitHub:</value>
+    <comment>AboutPage Notepads SourceCode Title display text.</comment>
+  </data>
+  <data name="AboutPage_Notepads_WebsiteTitle.Text" xml:space="preserve">
+    <value>ดูข้อมูลเพิ่มเติมได้ที่เว็บไซต์:</value>
+    <comment>AboutPage Notepads Website Title display text.</comment>
+  </data>
+  <data name="AboutPage_PrivacyStatementTitle.Text" xml:space="preserve">
+    <value>คำแถลงความเป็นส่วนตัว</value>
+    <comment>AboutPage PrivacyStatementTitle display text.</comment>
+  </data>
+  <data name="AboutPage_Title.Content" xml:space="preserve">
+    <value>เกี่ยวกับ</value>
+    <comment>AboutPage Title display text.</comment>
+  </data>
+  <data name="AdvancedPage_StatusBarSettings_ShowHideStatusBarToggleSwitch.OffContent" xml:space="preserve">
+    <value>แสดงแถบสถานะ</value>
+    <comment>AdvancedPage StatusBarSettings ShowHideStatusBarToggleSwitch Off display text.</comment>
+  </data>
+  <data name="AdvancedPage_StatusBarSettings_ShowHideStatusBarToggleSwitch.OnContent" xml:space="preserve">
+    <value>แสดงแถบสถานะ</value>
+    <comment>AdvancedPage StatusBarSettings ShowHideStatusBarToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_StatusBarSettings_Title.Text" xml:space="preserve">
+    <value>การตั้งค่าแถบสถานะ</value>
+    <comment>AdvancedPage StatusBarSettings Title display text.</comment>
+  </data>
+  <data name="AdvancedPage_Title.Content" xml:space="preserve">
+    <value>ขั้นสูง</value>
+    <comment>AdvancedPage Title display text.</comment>
+  </data>
+  <data name="PersonalizationPage_AccentColorSettings_Title.Text" xml:space="preserve">
+    <value>สีเน้น</value>
+    <comment>PersonalizationPage AccentColorSettings Title display text.</comment>
+  </data>
+  <data name="PersonalizationPage_AccentColorSettings_UseWindowsAccentColorToggleSwitch.OffContent" xml:space="preserve">
+    <value>ใช้สีเน้นของ Windows</value>
+    <comment>PersonalizationPage AccentColorSettings UseWindowsAccentColorToggleSwitch Off display text.</comment>
+  </data>
+  <data name="PersonalizationPage_AccentColorSettings_UseWindowsAccentColorToggleSwitch.OnContent" xml:space="preserve">
+    <value>ใช้สีเน้นของ Windows</value>
+    <comment>PersonalizationPage AccentColorSettings UseWindowsAccentColorToggleSwitch On display text.</comment>
+  </data>
+  <data name="PersonalizationPage_BackgroundTintOpacitySettings_Description.Text" xml:space="preserve">
+    <value>ความทึบของสีพื้นหลังเอฟเฟกต์ Acrylic หมายเหตุ: เอฟเฟกต์ Acrylic จะปิดลงเมื่อเปิดโหมดประหยัดพลังงานหรือปิดเอฟเฟกต์ความโปร่งใสใน Windows</value>
+    <comment>PersonalizationPage BackgroundTintOpacitySettings Description display text.</comment>
+  </data>
+  <data name="PersonalizationPage_BackgroundTintOpacitySettings_Title.Text" xml:space="preserve">
+    <value>ความทึบของสีพื้นหลัง</value>
+    <comment>PersonalizationPage BackgroundTintOpacitySettings Title display text.</comment>
+  </data>
+  <data name="PersonalizationPage_ThemeModeSettings_DarkModeRadioButton.Content" xml:space="preserve">
+    <value>มืด</value>
+    <comment>PersonalizationPage ThemeModeSettings DarkModeRadioButton content display text.</comment>
+  </data>
+  <data name="PersonalizationPage_ThemeModeSettings_LightModeRadioButton.Content" xml:space="preserve">
+    <value>สว่าง</value>
+    <comment>PersonalizationPage ThemeModeSettings LightModeRadioButton content display text.</comment>
+  </data>
+  <data name="PersonalizationPage_ThemeModeSettings_Title.Text" xml:space="preserve">
+    <value>โหมดชุดรูปแบบ</value>
+    <comment>PersonalizationPage ThemeModeSettings Title display text.</comment>
+  </data>
+  <data name="PersonalizationPage_ThemeModeSettings_WindowsModeRadioButton.Content" xml:space="preserve">
+    <value>ใช้ตามโหมดของ Windows</value>
+    <comment>PersonalizationPage ThemeModeSettings WindowsModeRadioButton content display text.</comment>
+  </data>
+  <data name="PersonalizationPage_Title.Content" xml:space="preserve">
+    <value>การปรับแต่งส่วนบุคคล</value>
+    <comment>PersonalizationPage Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_DecodingSettings_AnsiRadioButton.Content" xml:space="preserve">
+    <value>ANSI (Windows code page)</value>
+    <comment>TextAndEditorPage DecodingSettings AnsiRadioButton content display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_DecodingSettings_Description.Text" xml:space="preserve">
+    <value>การถอดรหัสสำรองจะถูกใช้เมื่อไม่สามารถตรวจหาการเข้ารหัสของไฟล์ได้</value>
+    <comment>TextAndEditorPage DecodingSettings Description display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_DecodingSettings_Title.Text" xml:space="preserve">
+    <value>การถอดรหัสสำรอง</value>
+    <comment>TextAndEditorPage DecodingSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_DecodingSettings_Utf8RadioButton.Content" xml:space="preserve">
+    <value>UTF-8</value>
+    <comment>TextAndEditorPage DecodingSettings Utf8RadioButton content display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_EncodingSettings_Description.Text" xml:space="preserve">
+    <value>มีผลเฉพาะเอกสารใหม่เท่านั้น</value>
+    <comment>TextAndEditorPage EncodingSettings Description display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_EncodingSettings_Title.Text" xml:space="preserve">
+    <value>การเข้ารหัสเริ่มต้น</value>
+    <comment>TextAndEditorPage EncodingSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_FontSettings_Title.Text" xml:space="preserve">
+    <value>แบบอักษรและขนาดเริ่มต้น</value>
+    <comment>TextAndEditorPage FontSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_LineEndingSettings_Description.Text" xml:space="preserve">
+    <value>มีผลเฉพาะเอกสารใหม่เท่านั้น</value>
+    <comment>TextAndEditorPage LineEndingSettings Description display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_LineEndingSettings_Title.Text" xml:space="preserve">
+    <value>การขึ้นบรรทัดใหม่เริ่มต้น</value>
+    <comment>TextAndEditorPage LineEndingSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TabKeySettings_DefaultRadioButton.Content" xml:space="preserve">
+    <value>ค่าเริ่มต้น (\t)</value>
+    <comment>TextAndEditorPage TabKeySettings DefaultRadioButton content display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TabKeySettings_Description.Text" xml:space="preserve">
+    <value>การตั้งค่าการทำงานของปุ่ม Tab จะมีผลกับแท็บใหม่ที่พิมพ์โดยผู้ใช้</value>
+    <comment>TextAndEditorPage TabKeySettings Description display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TabKeySettings_EightSpacesRadioButton.Content" xml:space="preserve">
+    <value>8 ช่องว่าง</value>
+    <comment>TextAndEditorPage TabKeySettings EightSpacesRadioButton content display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TabKeySettings_FourSpacesRadioButton.Content" xml:space="preserve">
+    <value>4 ช่องว่าง</value>
+    <comment>TextAndEditorPage TabKeySettings FourSpacesRadioButton content display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TabKeySettings_Title.Text" xml:space="preserve">
+    <value>พฤติกรรมของปุ่ม Tab</value>
+    <comment>TextAndEditorPage TabKeySettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TabKeySettings_TwoSpacesRadioButton.Content" xml:space="preserve">
+    <value>2 ช่องว่าง</value>
+    <comment>TextAndEditorPage TabKeySettings TwoSpacesRadioButton content display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TextWrappingSettings_Title.Text" xml:space="preserve">
+    <value>การตัดคำ</value>
+    <comment>TextAndEditorPage TextWrappingSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TextWrappingSettings_ToggleSwitch.OffContent" xml:space="preserve">
+    <value>ตัดคำ</value>
+    <comment>TextAndEditorPage TextWrappingSettings ToggleSwitch Off display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_TextWrappingSettings_ToggleSwitch.OnContent" xml:space="preserve">
+    <value>ตัดคำ</value>
+    <comment>TextAndEditorPage TextWrappingSettings ToggleSwitch On display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_Title.Content" xml:space="preserve">
+    <value>ข้อความและตัวแก้ไข</value>
+    <comment>TextAndEditorPage Title display text.</comment>
+  </data>
+  <data name="AboutPage_ChangelogUrl_Title.Text" xml:space="preserve">
+    <value>บันทึกการเปลี่ยนแปลง</value>
+    <comment>AboutPage Changelog Title display text.</comment>
+  </data>
+  <data name="AdvancedPage_SessionSnapshotSettings_Description.Text" xml:space="preserve">
+    <value>เมื่อเปิดใช้งาน Notepads จะจดจำเซสชันปัจจุบันสำหรับการเปิดครั้งถัดไป และสำรองข้อมูลเป็นระยะเพื่อป้องกันการสูญหายของข้อมูล Notepads จะไม่แจ้งเตือนให้บันทึกไฟล์เมื่อปิดแอปหากเปิดใช้งานฟีเจอร์นี้</value>
+    <comment>AdvancedPage SessionSnapshotSettings Description display text.</comment>
+  </data>
+  <data name="AdvancedPage_SessionSnapshotSettings_OnOffToggleSwitch.OffContent" xml:space="preserve">
+    <value>เปิดใช้งานการบันทึกเซสชัน</value>
+    <comment>AdvancedPage SessionSnapshotSettings OnOffToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_SessionSnapshotSettings_OnOffToggleSwitch.OnContent" xml:space="preserve">
+    <value>เปิดใช้งานการบันทึกเซสชัน</value>
+    <comment>AdvancedPage SessionSnapshotSettings OnOffToggleSwitch Off display text.</comment>
+  </data>
+  <data name="AdvancedPage_SessionSnapshotSettings_Title.Text" xml:space="preserve">
+    <value>การตั้งค่าการบันทึกเซสชัน</value>
+    <comment>AdvancedPageSessionSnapshotSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_SpellingSettings_HighlightMisspelledWordsToggleSwitch.OffContent" xml:space="preserve">
+    <value>เน้นคำที่สะกดผิด</value>
+    <comment>TextAndEditorPage SpellingSettings HighlightMisspelledWordsToggleSwitch Off display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_SpellingSettings_HighlightMisspelledWordsToggleSwitch.OnContent" xml:space="preserve">
+    <value>เน้นคำที่สะกดผิด</value>
+    <comment>TextAndEditorPage SpellingSettings HighlightMisspelledWordsToggleSwitch On display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_SpellingSettings_Title.Text" xml:space="preserve">
+    <value>การสะกดคำ</value>
+    <comment>TextAndEditorPage SpellingSettings Title display text.</comment>
+  </data>
+  <data name="AdvancedPage_AlwaysOpenNewWindow_Description.Text" xml:space="preserve">
+    <value>เมื่อเปิดใช้งาน Notepads จะเปิดไฟล์ในหน้าต่างใหม่เสมอแทนที่จะสร้างแท็บใหม่</value>
+    <comment>AdvancedPage LaunchPreferenceSettings AlwaysOpenNewWindow Description display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_AlwaysOpenNewWindowToggleSwitch.OffContent" xml:space="preserve">
+    <value>เปิดหน้าต่างใหม่เสมอ</value>
+    <comment>AdvancedPage LaunchPreferenceSettings AlwaysOpenNewWindow OnOffToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_AlwaysOpenNewWindowToggleSwitch.OnContent" xml:space="preserve">
+    <value>เปิดหน้าต่างใหม่เสมอ</value>
+    <comment>AdvancedPage LaunchPreferenceSettings AlwaysOpenNewWindow OnOffToggleSwitch Off display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_Title.Text" xml:space="preserve">
+    <value>การกำหนดลักษณะการเปิดโปรแกรม</value>
+    <comment>AdvancedPage LaunchPreferenceSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_LineHighlighterSettings_ToggleSwitch.OffContent" xml:space="preserve">
+    <value>เน้นบรรทัดปัจจุบัน</value>
+    <comment>TextAndEditorPage LineHighlighterSettings ToggleSwitch Off display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_LineHighlighterSettings_ToggleSwitch.OnContent" xml:space="preserve">
+    <value>เน้นบรรทัดปัจจุบัน</value>
+    <comment>TextAndEditorPage LineHighlighterSettings ToggleSwitch On display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_SearchEngineSettings_CustomSearchUrlRadioButton.Text" xml:space="preserve">
+    <value>เครื่องมือค้นหาที่กำหนดเอง</value>
+    <comment>TextAndEditorPage CustomSearchUrlRadioButton display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_SearchEngineSettings_CustomSearchUrlRadioButton_CustomUrlErrorReport.Text" xml:space="preserve">
+    <value>*ระบุ URL ในรูปแบบ https://www.example.com/search?q={0}</value>
+    <comment>TextAndEditorPage CustomSearchUrl Textbox display text when entered text is not a valid format.</comment>
+  </data>
+  <data name="TextAndEditorPage_SearchEngineSettings_Description.Text" xml:space="preserve">
+    <value>การตั้งค่าเครื่องมือค้นหาเริ่มต้นเมื่อทำการค้นหาบนเว็บ</value>
+    <comment>TextAndEditorPage SearchEngineSettings Description display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_SearchEngineSettings_Title.Text" xml:space="preserve">
+    <value>เครื่องมือค้นหาเริ่มต้น</value>
+    <comment>TextAndEditorPage SearchEngineSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_DecodingSettings_AutoGuessRadioButton.Content" xml:space="preserve">
+    <value>ตรวจหาการเข้ารหัสอัตโนมัติ (แนะนำ)</value>
+    <comment>TextAndEditorPage DecodingSettings AutoGuessDecodingRadioButton content display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_DisplaySettings_Title.Text" xml:space="preserve">
+    <value>การแสดงผล</value>
+    <comment>TextAndEditorPage DisplaySettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_LineNumbersSettings_Description.Text" xml:space="preserve">
+    <value>แสดงหมายเลขบรรทัดในเอกสาร</value>
+    <comment>TextAndEditorPage LineNumbersSettings Description display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_LineNumbersSettings_ToggleSwitch.OffContent" xml:space="preserve">
+    <value>แสดงหมายเลขบรรทัด</value>
+    <comment>TextAndEditorPage LineNumbersSettings ToggleSwitch Off display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_LineNumbersSettings_ToggleSwitch.OnContent" xml:space="preserve">
+    <value>แสดงหมายเลขบรรทัด</value>
+    <comment>TextAndEditorPage LineNumbersSettings ToggleSwitch On display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_FontStyleSettings_Title.Text" xml:space="preserve">
+    <value>ลักษณะแบบอักษรเริ่มต้น</value>
+    <comment>TextAndEditorPage FontStyleSettings Title display text.</comment>
+  </data>
+  <data name="TextAndEditorPage_FontWeightSettings_Title.Text" xml:space="preserve">
+    <value>ความหนาแบบอักษรเริ่มต้น</value>
+    <comment>TextAndEditorPage FontWeightSettings Title display text.</comment>
+  </data>
+  <data name="AdvancedPage_LanguagePreferenceSettings_Description.Text" xml:space="preserve">
+    <value>เลือกภาษาเพื่อแทนที่ภาษาเริ่มต้นของระบบใน Notepads จำเป็นต้องรีสตาร์ทเพื่อนำการเปลี่ยนแปลงไปใช้</value>
+    <comment>AdvancedPage LanguagePreferenceSettings Description display text.</comment>
+  </data>
+  <data name="AdvancedPage_LanguagePreferenceSettings_RestartPrompt.Text" xml:space="preserve">
+    <value>*รีสตาร์ท Notepads เพื่อให้การเปลี่ยนแปลงมีผลสมบูรณ์</value>
+    <comment>AdvancedPage LanguagePreferenceSettings RestartPrompt display text.</comment>
+  </data>
+  <data name="AdvancedPage_LanguagePreferenceSettings_Title.Text" xml:space="preserve">
+    <value>การกำหนดลักษณะภาษา</value>
+    <comment>AdvancedPage LanguagePreferenceSettings Title display text.</comment>
+  </data>
+  <data name="AdvancedPage_SmartCopySettings_Description.Text" xml:space="preserve">
+    <value>เมื่อเปิดใช้งาน Notepads จะตัดช่องว่าง แท็บ และบรรทัดว่างที่หัวและท้ายข้อความที่เลือกอย่างชาญฉลาดก่อนคัดลอกไปยังคลิปบอร์ด</value>
+    <comment>AdvancedPage SmartCopySettings Description display text.</comment>
+  </data>
+  <data name="AdvancedPage_SmartCopySettings_EnableSmartCopyToggleSwitch.OffContent" xml:space="preserve">
+    <value>เปิดใช้งาน Smart Copy</value>
+    <comment>AdvancedPage SmartCopySettings EnableSmartCopyToggleSwitch Off display text.</comment>
+  </data>
+  <data name="AdvancedPage_SmartCopySettings_EnableSmartCopyToggleSwitch.OnContent" xml:space="preserve">
+    <value>เปิดใช้งาน Smart Copy</value>
+    <comment>AdvancedPage SmartCopySettings EnableSmartCopyToggleSwitch On display text.</comment>
+  </data>
+  <data name="AdvancedPage_SmartCopySettings_Title.Text" xml:space="preserve">
+    <value>การตั้งค่า Smart Copy</value>
+    <comment>AdvancedPage SmartCopySettings Title display text.</comment>
+  </data>
+  <data name="AdvancedPage_LanguagePreferenceSettings_SystemDefaultText" xml:space="preserve">
+    <value>ค่าเริ่มต้นของระบบ</value>
+    <comment>AdvancedPage LanguagePreferenceSettings System Default option text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_ExitWhenLastTabClosedToggleSwitch.OffContent" xml:space="preserve">
+    <value>ปิดแอปเมื่อปิดแท็บสุดท้าย</value>
+    <comment>AdvancedPage AppLifecyclePreferenceSettings ExitingLastTabClosesWindowToggleSwitch Off display text.</comment>
+  </data>
+  <data name="AdvancedPage_LaunchPreferenceSettings_ExitWhenLastTabClosedToggleSwitch.OnContent" xml:space="preserve">
+    <value>ปิดแอปเมื่อปิดแท็บสุดท้าย</value>
+    <comment>AdvancedPage AppLifecyclePreferenceSettings ExitingLastTabClosesWindowToggleSwitch On display text.</comment>
+  </data>
+</root>
