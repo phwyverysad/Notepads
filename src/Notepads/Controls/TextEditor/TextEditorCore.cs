@@ -745,7 +745,7 @@ namespace Notepads.Controls.TextEditor
         {
             Document.DefaultTabStop = (float)FontUtility.GetTextSize(font, fontSize, "text").Width;
             var format = Document.GetDefaultParagraphFormat();
-            format.SetLineSpacing(LineSpacingRule.Exactly, (float)fontSize);
+            format.SetLineSpacing(LineSpacingRule.AtLeast, (float)fontSize);
             Document.SetDefaultParagraphFormat(format);
         }
 
@@ -758,12 +758,13 @@ namespace Notepads.Controls.TextEditor
             Document.Selection.SetText(TextSetOptions.None, RichEditBoxDefaultLineEnding + leadingSpacesAndTabs);
             Document.Selection.StartPosition = Document.Selection.EndPosition;
 
-            // If the previous line was a heading, reset the new line to normal body font size and weight
+            // If the previous line was a heading, reset the new line to normal body font size, weight and line spacing
             var defaultSize = (float)FontSize;
             if (Document.Selection.CharacterFormat.Size > defaultSize + 0.5f)
             {
                 Document.Selection.CharacterFormat.Size = defaultSize;
                 Document.Selection.CharacterFormat.Bold = FormatEffect.Off;
+                Document.Selection.ParagraphFormat.SetLineSpacing(LineSpacingRule.AtLeast, defaultSize);
             }
         }
 

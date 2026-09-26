@@ -1589,12 +1589,14 @@ namespace Notepads.Controls.TextEditor
                 float targetSize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(effectiveStyle, baseFontSize);
                 bool isBold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(effectiveStyle);
                 var targetBold = isBold ? Windows.UI.Text.FormatEffect.On : Windows.UI.Text.FormatEffect.Off;
+                float targetLineSpacing = (effectiveStyle == Notepads.Utilities.MarkdownHeadingStyle.Body) ? baseFontSize : targetSize;
 
                 if (lineEnd > lineStart)
                 {
                     var range = TextEditorCore.Document.GetRange(lineStart, lineEnd);
                     range.CharacterFormat.Size = targetSize;
                     range.CharacterFormat.Bold = targetBold;
+                    range.ParagraphFormat.SetLineSpacing(Windows.UI.Text.LineSpacingRule.AtLeast, targetLineSpacing);
 
                     if (start == end)
                     {
@@ -1602,6 +1604,7 @@ namespace Notepads.Controls.TextEditor
                         TextEditorCore.Document.Selection.SetRange(newCursor, newCursor);
                         TextEditorCore.Document.Selection.CharacterFormat.Size = targetSize;
                         TextEditorCore.Document.Selection.CharacterFormat.Bold = targetBold;
+                        TextEditorCore.Document.Selection.ParagraphFormat.SetLineSpacing(Windows.UI.Text.LineSpacingRule.AtLeast, targetLineSpacing);
                     }
                     else
                     {
@@ -1613,6 +1616,7 @@ namespace Notepads.Controls.TextEditor
                     TextEditorCore.Document.Selection.SetRange(lineStart, lineStart);
                     TextEditorCore.Document.Selection.CharacterFormat.Size = targetSize;
                     TextEditorCore.Document.Selection.CharacterFormat.Bold = targetBold;
+                    TextEditorCore.Document.Selection.ParagraphFormat.SetLineSpacing(Windows.UI.Text.LineSpacingRule.AtLeast, targetLineSpacing);
                 }
 
                 TextEditorCore.Focus(FocusState.Programmatic);
@@ -1758,6 +1762,7 @@ namespace Notepads.Controls.TextEditor
             selection.CharacterFormat.Italic = Windows.UI.Text.FormatEffect.Off;
             selection.CharacterFormat.Strikethrough = Windows.UI.Text.FormatEffect.Off;
             selection.CharacterFormat.Underline = Windows.UI.Text.UnderlineType.None;
+            selection.ParagraphFormat.SetLineSpacing(Windows.UI.Text.LineSpacingRule.AtLeast, (float)TextEditorCore.FontSize);
             TextEditorCore.Focus(FocusState.Programmatic);
         }
 

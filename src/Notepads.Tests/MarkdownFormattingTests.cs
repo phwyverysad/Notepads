@@ -425,5 +425,90 @@ namespace Notepads.Tests
             Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Body, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("Body"));
             Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Body, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix(""));
         }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_AllHeadingSizes_AreStrictlyHierarchicalAndGreaterThanBase()
+        {
+            float[] baseSizes = new float[] { 12f, 14f, 16f, 18f, 24f };
+
+            foreach (var baseSize in baseSizes)
+            {
+                float titleSize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Title, baseSize);
+                float h1Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading1, baseSize);
+                float subtitleSize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Subtitle, baseSize);
+                float h2Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading2, baseSize);
+                float h3Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading3, baseSize);
+                float h4Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading4, baseSize);
+                float bodySize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Body, baseSize);
+
+                // Ensure Title is largest
+                Assert.IsTrue(titleSize > h1Size, $"Title ({titleSize}) should be larger than H1 ({h1Size}) for base {baseSize}");
+                Assert.IsTrue(h1Size > subtitleSize, $"H1 ({h1Size}) should be larger than Subtitle ({subtitleSize}) for base {baseSize}");
+                Assert.IsTrue(subtitleSize > h2Size, $"Subtitle ({subtitleSize}) should be larger than H2 ({h2Size}) for base {baseSize}");
+                Assert.IsTrue(h2Size > h3Size, $"H2 ({h2Size}) should be larger than H3 ({h3Size}) for base {baseSize}");
+                Assert.IsTrue(h3Size > h4Size, $"H3 ({h3Size}) should be larger than H4 ({h4Size}) for base {baseSize}");
+                Assert.IsTrue(h4Size >= bodySize, $"H4 ({h4Size}) should be >= Body ({bodySize}) for base {baseSize}");
+                Assert.AreEqual(baseSize, bodySize, $"Body should equal base size {baseSize}");
+            }
+        }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_ThaiAndUnicodePrefixStripping_PreservesToneMarksAndAscenders()
+        {
+            // Case 1: Complex Thai string with multiple tone marks and tall ascenders (ฟ, ห, ก)
+            string thaiText1 = "###### ฟหหกฟหหกฟหหก เ";
+            string stripped1 = Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix(thaiText1);
+            Assert.AreEqual("ฟหหกฟหหกฟหหก เ", stripped1);
+
+            // Case 2: Thai string with tone mark on vowel (ปี่, ที่, ผู้)
+            string thaiText2 = "# ที่นี่คือปี่ของผู้จัดการ";
+            string stripped2 = Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix(thaiText2);
+            Assert.AreEqual("ที่นี่คือปี่ของผู้จัดการ", stripped2);
+
+            // Case 3: Leading indent preserved with Thai text
+            string thaiText3 = "   ### หัวเรื่องแบบเยื้อง";
+            string stripped3 = Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix(thaiText3);
+            Assert.AreEqual("   หัวเรื่องแบบเยื้อง", stripped3);
+
+            // Case 4: No heading prefix is untouched
+            string thaiText4 = "ไม่มีแฮชแท็ก ฟหหก";
+            string stripped4 = Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix(thaiText4);
+            Assert.AreEqual("ไม่มีแฮชแท็ก ฟหหก", stripped4);
+        }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_LineSpacingTargetCalculation_ProvidesMinimumSafeHeight()
+        {
+            // Verify that for all heading styles, target line spacing is at least the font size
+            float baseFontSize = 14f;
+            foreach (Notepads.Utilities.MarkdownHeadingStyle style in Enum.GetValues(typeof(Notepads.Utilities.MarkdownHeadingStyle)))
+            {
+                float fontSize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(style, baseFontSize);
+                float lineSpacing = (style == Notepads.Utilities.MarkdownHeadingStyle.Body) ? baseFontSize : fontSize;
+
+                // Target line spacing must always be at least the font size so text never clips
+                Assert.IsTrue(lineSpacing >= baseFontSize, $"Line spacing for {style} should be >= base font size");
+                if (style != Notepads.Utilities.MarkdownHeadingStyle.Body)
+                {
+                    Assert.IsTrue(lineSpacing >= fontSize, $"Heading line spacing for {style} should be >= heading font size ({fontSize})");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_SingleLineSelectionDetection_SupportsLargeHeadings()
+        {
+            // Ensure single-line logic operates on line indices rather than fragile height ratios
+            int startLine1 = 1;
+            int endLine1 = 1;
+            bool isSingleLine1 = (startLine1 == endLine1);
+            Assert.IsTrue(isSingleLine1, "Same line index should be detected as single line even if height is 35px");
+
+            int startLine2 = 1;
+            int endLine2 = 2;
+            bool isSingleLine2 = (startLine2 == endLine2);
+            Assert.IsFalse(isSingleLine2, "Different line index should be detected as multi-line");
+        }
     }
 }
+

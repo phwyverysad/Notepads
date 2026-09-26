@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -47,7 +47,10 @@ namespace Notepads.Controls.TextEditor
             if (height < singleLineHeight) height = singleLineHeight;
 
             // Show line highlighter rect when it is enabled when selection is single line only
-            if (DisplayLineHighlighter && height < singleLineHeight * 1.5f)
+            GetLineColumnSelection(out var startLineIndex, out var endLineIndex, out _, out _, out _, out _);
+            bool isSingleLine = startLineIndex == endLineIndex;
+
+            if (DisplayLineHighlighter && isSingleLine)
             {
                 _lineHighlighter.Height = height;
                 _lineHighlighter.Margin = new Thickness(0, selectionRect.Y + Padding.Top, 0, 0);

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -195,6 +195,7 @@ namespace Notepads.Controls.TextEditor
 
             foreach (var (lineNumber, rect) in lineNumberTextRenderingPositions)
             {
+                var lineBlockHeight = Math.Max(rect.Height, lineNumberTextBlockHeight);
                 var margin = new Thickness(lineNumberPadding.Left,
                     rect.Top + lineNumberPadding.Top + Padding.Top,
                     lineNumberPadding.Right,
@@ -206,7 +207,7 @@ namespace Notepads.Controls.TextEditor
                     var index = numOfReusableLineNumberBlocks - 1;
                     _renderedLineNumberBlocks[index].Text = lineNumber.ToString();
                     _renderedLineNumberBlocks[index].Margin = margin;
-                    _renderedLineNumberBlocks[index].Height = lineNumberTextBlockHeight;
+                    _renderedLineNumberBlocks[index].Height = lineBlockHeight;
                     _renderedLineNumberBlocks[index].Width = minLineNumberTextRenderingWidth;
                     _renderedLineNumberBlocks[index].Visibility = Visibility.Visible;
                     _renderedLineNumberBlocks[index].Foreground = lineNumberForeground;
@@ -218,7 +219,7 @@ namespace Notepads.Controls.TextEditor
                     var lineNumberBlock = new TextBlock()
                     {
                         Text = lineNumber.ToString(),
-                        Height = lineNumberTextBlockHeight,
+                        Height = lineBlockHeight,
                         Width = minLineNumberTextRenderingWidth,
                         Margin = margin,
                         TextAlignment = TextAlignment.Right,
