@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -24,6 +24,16 @@ namespace Notepads.Extensions
             return str.Substring(0, i);
         }
 
+        public static bool IsWordCharacter(char c)
+        {
+            if (char.IsLetterOrDigit(c) || c == '_') return true;
+            var category = System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c);
+            return category == System.Globalization.UnicodeCategory.NonSpacingMark ||
+                   category == System.Globalization.UnicodeCategory.SpacingCombiningMark ||
+                   category == System.Globalization.UnicodeCategory.EnclosingMark ||
+                   category == System.Globalization.UnicodeCategory.ModifierLetter;
+        }
+
         public static int IndexOfWholeWord(this string str, string value, int startIndex, StringComparison comparison)
         {
             int pos = startIndex;
@@ -32,11 +42,11 @@ namespace Notepads.Extensions
             {
                 bool startBoundary = true;
                 if (pos > 0)
-                    startBoundary = !char.IsLetterOrDigit(str[pos - 1]);
+                    startBoundary = !IsWordCharacter(str[pos - 1]);
 
                 bool endBoundary = true;
                 if (pos + value.Length < str.Length)
-                    endBoundary = !char.IsLetterOrDigit(str[pos + value.Length]);
+                    endBoundary = !IsWordCharacter(str[pos + value.Length]);
 
                 if (startBoundary && endBoundary)
                     return pos;
@@ -54,11 +64,11 @@ namespace Notepads.Extensions
             {
                 bool startBoundary = true;
                 if (pos > 0)
-                    startBoundary = !char.IsLetterOrDigit(str[pos - 1]);
+                    startBoundary = !IsWordCharacter(str[pos - 1]);
 
                 bool endBoundary = true;
                 if (pos + value.Length < str.Length)
-                    endBoundary = !char.IsLetterOrDigit(str[pos + value.Length]);
+                    endBoundary = !IsWordCharacter(str[pos + value.Length]);
 
                 if (startBoundary && endBoundary)
                     return pos;

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -22,6 +22,7 @@ namespace Notepads.Controls.FindAndReplace
     {
         public event EventHandler<RoutedEventArgs> OnDismissKeyDown;
         public event EventHandler<FindAndReplaceEventArgs> OnFindAndReplaceButtonClicked;
+        public event EventHandler<SearchContext> OnLiveSearchTriggered;
         public event EventHandler<bool> OnToggleReplaceModeButtonClicked;
         public event EventHandler<KeyRoutedEventArgs> OnFindReplaceControlKeyDown;
 
@@ -139,6 +140,38 @@ namespace Notepads.Controls.FindAndReplace
             OnDismissKeyDown?.Invoke(sender, e);
         }
 
+        public void UpdateMatchCount(int current, int total, bool regexError = false)
+        {
+            if (MatchCountTextBlock == null) return;
+
+            if (string.IsNullOrEmpty(FindBar.Text))
+            {
+                MatchCountTextBlock.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (regexError)
+            {
+                MatchCountTextBlock.Text = "!";
+                MatchCountTextBlock.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
+                MatchCountTextBlock.Visibility = Visibility.Visible;
+                return;
+            }
+
+            if (total == 0)
+            {
+                MatchCountTextBlock.Text = "0/0";
+                MatchCountTextBlock.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 230, 80, 80));
+                MatchCountTextBlock.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MatchCountTextBlock.Text = $"{current}/{total}";
+                MatchCountTextBlock.Foreground = (Brush)Application.Current.Resources["SystemControlPageTextBaseMediumBrush"];
+                MatchCountTextBlock.Visibility = Visibility.Visible;
+            }
+        }
+
         private void FindBar_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             if (!string.IsNullOrEmpty(FindBar.Text))
@@ -150,6 +183,8 @@ namespace Notepads.Controls.FindAndReplace
                     ReplaceButton.IsEnabled = true;
                     ReplaceAllButton.IsEnabled = true;
                 }
+
+                OnLiveSearchTriggered?.Invoke(this, GetSearchContext());
             }
             else
             {
@@ -157,6 +192,7 @@ namespace Notepads.Controls.FindAndReplace
                 SearchBackwardButton.IsEnabled = false;
                 ReplaceButton.IsEnabled = false;
                 ReplaceAllButton.IsEnabled = false;
+                UpdateMatchCount(0, 0);
             }
         }
 
@@ -176,6 +212,27 @@ namespace Notepads.Controls.FindAndReplace
 
         private void FindBar_OnKeyDown(object sender, KeyRoutedEventArgs e)
         {
+            if (e.Key == VirtualKey.Escape)
+            {
+                e.Handled = true;
+                OnDismissKeyDown?.Invoke(this, new RoutedEventArgs());
+                return;
+            }
+
+            if (e.Key == VirtualKey.Down)
+            {
+                e.Handled = true;
+                SearchForwardButton_OnClick(sender, e);
+                return;
+            }
+
+            if (e.Key == VirtualKey.Up)
+            {
+                e.Handled = true;
+                SearchBackwardButton_OnClick(sender, e);
+                return;
+            }
+
             var shiftDown = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift).HasFlag(CoreVirtualKeyStates.Down);
 
             if (e.Key == VirtualKey.Enter && !string.IsNullOrEmpty(FindBar.Text))
@@ -214,6 +271,13 @@ namespace Notepads.Controls.FindAndReplace
 
         private void ReplaceBar_OnKeyDown(object sender, KeyRoutedEventArgs e)
         {
+            if (e.Key == VirtualKey.Escape)
+            {
+                e.Handled = true;
+                OnDismissKeyDown?.Invoke(this, new RoutedEventArgs());
+                return;
+            }
+
             var shiftDown = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift).HasFlag(CoreVirtualKeyStates.Down);
 
             if (e.Key == VirtualKey.Enter && !string.IsNullOrEmpty(FindBar.Text))
@@ -278,10 +342,22 @@ namespace Notepads.Controls.FindAndReplace
             {
                 OptionButtonSelectionIndicator.Visibility = Visibility.Collapsed;
             }
+
+            if (!string.IsNullOrEmpty(FindBar.Text))
+            {
+                OnLiveSearchTriggered?.Invoke(this, GetSearchContext());
+            }
         }
 
         private void FindAndReplaceRootGrid_KeyDown(object sender, KeyRoutedEventArgs e)
         {
+            if (e.Key == VirtualKey.Escape)
+            {
+                e.Handled = true;
+                OnDismissKeyDown?.Invoke(this, new RoutedEventArgs());
+                return;
+            }
+
             var ctrlDown = Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down);
             var altDown = Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down);
             var shiftDown = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift).HasFlag(CoreVirtualKeyStates.Down);

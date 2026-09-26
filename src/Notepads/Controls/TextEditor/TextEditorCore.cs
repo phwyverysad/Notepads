@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -38,6 +38,7 @@ namespace Notepads.Controls.TextEditor
         public event EventHandler<TextControlCopyingToClipboardEventArgs> CopyTextToWindowsClipboardRequested;
         public event EventHandler<TextControlCuttingToClipboardEventArgs> CutSelectedTextToWindowsClipboardRequested;
         public event EventHandler<ScrollViewerViewChangingEventArgs> ScrollViewerViewChanging;
+        public event Action<string, string> WrapSelectionRequested;
 
         private const char RichEditBoxDefaultLineEnding = '\r';
         private const char RegexDefaultLineEnding = '\n';
@@ -242,7 +243,7 @@ namespace Notepads.Controls.TextEditor
         {
             var swallowedKeys = new List<VirtualKey>()
             {
-                VirtualKey.B, VirtualKey.I, VirtualKey.U, VirtualKey.Tab,
+                VirtualKey.U, VirtualKey.Tab,
                 VirtualKey.Number1, VirtualKey.Number2, VirtualKey.Number3,
                 VirtualKey.Number4, VirtualKey.Number5, VirtualKey.Number6,
                 VirtualKey.Number7, VirtualKey.Number8, VirtualKey.Number9,
@@ -264,6 +265,9 @@ namespace Notepads.Controls.TextEditor
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.E, async (args) => await SearchInWebAsync()),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.D, (args) => DuplicateText()),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.J, (args) => JoinText()),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.B, (args) => WrapSelectionRequested?.Invoke("**", "**")),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.I, (args) => WrapSelectionRequested?.Invoke("*", "*")),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.K, (args) => WrapSelectionRequested?.Invoke("[", "](https://)")),
                 new KeyboardCommand<KeyRoutedEventArgs>(VirtualKey.Tab, (args) => AddIndentation(AppSettingsService.EditorDefaultTabIndents)),
                 new KeyboardCommand<KeyRoutedEventArgs>(false, false, true, VirtualKey.Tab, (args) => RemoveIndentation(AppSettingsService.EditorDefaultTabIndents)),
                 new KeyboardCommand<KeyRoutedEventArgs>(false, true, false, VirtualKey.Up, (args) => MoveTextUp()),

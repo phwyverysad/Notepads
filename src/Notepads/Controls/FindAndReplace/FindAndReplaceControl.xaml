@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="Notepads.Controls.FindAndReplace.FindAndReplaceControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -47,7 +47,7 @@
                                                   RelativePanel.AlignRightWithPanel="True"
                                                   HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Stretch"
-                                                  Padding="10,3,32,6"
+                                                  Padding="10,3,86,6"
                                                   IsSpellCheckEnabled="False"
                                                   TextAlignment="Left"
                                                   BorderThickness="0"
@@ -57,42 +57,54 @@
                                                   GotFocus="FindBar_GotFocus"
                                                   LostFocus="FindBar_LostFocus"/>
 
-            <Grid RelativePanel.AlignRightWithPanel="True" x:Name="OptionButtonGrid" Background="Transparent">
-                <Border x:Name="OptionButtonSelectionIndicator"
-                        BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}" 
-                        VerticalAlignment="Bottom" 
-                        BorderThickness="1" 
-                        Margin="9"
-                        Visibility="Collapsed"/>
-                <Button x:Name="OptionButton"
-                        x:Uid="FindAndReplace_SearchOptionButton"
-                        IsTabStop="False"
-                        Width="36"
-                        FontSize="16"
-                        Style="{StaticResource DismissButtonStyle}"
-                        Content="&#xE712;" 
-                        FontFamily="Segoe MDL2 Assets">
-                    <Button.Flyout>
-                        <MenuFlyout Placement="BottomEdgeAlignedRight">
-                            <ToggleMenuFlyoutItem x:Uid="FindAndReplace_SearchOptionToggleButton_MatchCase" x:Name="MatchCaseToggle" Click="OptionButtonFlyoutItem_OnClick">
-                                <ToggleMenuFlyoutItem.KeyboardAccelerators>
-                                    <KeyboardAccelerator Modifiers="Menu" Key="C"/>
-                                </ToggleMenuFlyoutItem.KeyboardAccelerators>
-                            </ToggleMenuFlyoutItem>
-                            <ToggleMenuFlyoutItem x:Uid="FindAndReplace_SearchOptionToggleButton_MatchWholeWord" x:Name="MatchWholeWordToggle" Click="OptionButtonFlyoutItem_OnClick">
-                                <ToggleMenuFlyoutItem.KeyboardAccelerators>
-                                    <KeyboardAccelerator Modifiers="Menu" Key="W"/>
-                                </ToggleMenuFlyoutItem.KeyboardAccelerators>
-                            </ToggleMenuFlyoutItem>
-                            <ToggleMenuFlyoutItem x:Uid="FindAndReplace_SearchOptionToggleButton_UseRegex" x:Name="UseRegexToggle" Click="OptionButtonFlyoutItem_OnClick">
-                                <ToggleMenuFlyoutItem.KeyboardAccelerators>
-                                    <KeyboardAccelerator Modifiers="Menu" Key="E"/>
-                                </ToggleMenuFlyoutItem.KeyboardAccelerators>
-                            </ToggleMenuFlyoutItem>
-                        </MenuFlyout>
-                    </Button.Flyout>
-                </Button>
-            </Grid>
+            <StackPanel RelativePanel.AlignRightWithPanel="True" 
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Center" 
+                        Margin="0,0,2,0">
+                <TextBlock x:Name="MatchCountTextBlock"
+                           FontSize="12"
+                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,4,0"
+                           Visibility="Collapsed"
+                           Text="0/0"/>
+                <Grid x:Name="OptionButtonGrid" Background="Transparent">
+                    <Border x:Name="OptionButtonSelectionIndicator"
+                            BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}" 
+                            VerticalAlignment="Bottom" 
+                            BorderThickness="1" 
+                            Margin="9"
+                            Visibility="Collapsed"/>
+                    <Button x:Name="OptionButton"
+                            x:Uid="FindAndReplace_SearchOptionButton"
+                            IsTabStop="False"
+                            Width="36"
+                            FontSize="16"
+                            Style="{StaticResource DismissButtonStyle}"
+                            Content="&#xE712;" 
+                            FontFamily="Segoe MDL2 Assets">
+                        <Button.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                <ToggleMenuFlyoutItem x:Uid="FindAndReplace_SearchOptionToggleButton_MatchCase" x:Name="MatchCaseToggle" Click="OptionButtonFlyoutItem_OnClick">
+                                    <ToggleMenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Menu" Key="C"/>
+                                    </ToggleMenuFlyoutItem.KeyboardAccelerators>
+                                </ToggleMenuFlyoutItem>
+                                <ToggleMenuFlyoutItem x:Uid="FindAndReplace_SearchOptionToggleButton_MatchWholeWord" x:Name="MatchWholeWordToggle" Click="OptionButtonFlyoutItem_OnClick">
+                                    <ToggleMenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Menu" Key="W"/>
+                                    </ToggleMenuFlyoutItem.KeyboardAccelerators>
+                                </ToggleMenuFlyoutItem>
+                                <ToggleMenuFlyoutItem x:Uid="FindAndReplace_SearchOptionToggleButton_UseRegex" x:Name="UseRegexToggle" Click="OptionButtonFlyoutItem_OnClick">
+                                    <ToggleMenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Menu" Key="E"/>
+                                    </ToggleMenuFlyoutItem.KeyboardAccelerators>
+                                </ToggleMenuFlyoutItem>
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                </Grid>
+            </StackPanel>
         </RelativePanel>
 
         <Grid Grid.Row="1" Grid.Column="1" Padding="1, 1, 1, 1" Height="36" x:Name="ReplaceBarPlaceHolder">

@@ -251,5 +251,108 @@ namespace Notepads.Tests
             string linkEmpty = WrapSelection(string.Empty, "[", "](https://)");
             Assert.AreEqual("[](https://)", linkEmpty);
         }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_AllSevenStyles_DetectedCorrectly()
+        {
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Title, Notepads.Utilities.MarkdownHeadingHelper.DetectStyle("# ชื่อเรื่องหลัก"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Subtitle, Notepads.Utilities.MarkdownHeadingHelper.DetectStyle("## คำบรรยายใต้ชื่อ"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading1, Notepads.Utilities.MarkdownHeadingHelper.DetectStyle("### ส่วนหัวที่หนึ่ง"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading2, Notepads.Utilities.MarkdownHeadingHelper.DetectStyle("#### หัวเรื่องย่อย"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading3, Notepads.Utilities.MarkdownHeadingHelper.DetectStyle("##### ส่วนย่อยเพิ่มเติม"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading4, Notepads.Utilities.MarkdownHeadingHelper.DetectStyle("###### ส่วนย่อยสุด"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Body, Notepads.Utilities.MarkdownHeadingHelper.DetectStyle("เนื้อความธรรมดาทั่วไป"));
+        }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_FormattingAndToggle_WorksProperly()
+        {
+            string line = "ข้อความทดสอบ";
+
+            // Format to Title (# )
+            string title = Notepads.Utilities.MarkdownHeadingHelper.FormatLine(line, Notepads.Utilities.MarkdownHeadingHelper.PrefixTitle);
+            Assert.AreEqual("# ข้อความทดสอบ", title);
+
+            // Clicking Title (# ) again on the same line toggles back to Body!
+            string toggled = Notepads.Utilities.MarkdownHeadingHelper.FormatLine(title, Notepads.Utilities.MarkdownHeadingHelper.PrefixTitle);
+            Assert.AreEqual("ข้อความทดสอบ", toggled);
+
+            // Format to Subtitle (## ) then switch to Heading1 (### )
+            string sub = Notepads.Utilities.MarkdownHeadingHelper.FormatLine(line, Notepads.Utilities.MarkdownHeadingHelper.PrefixSubtitle);
+            Assert.AreEqual("## ข้อความทดสอบ", sub);
+
+            string h1 = Notepads.Utilities.MarkdownHeadingHelper.FormatLine(sub, Notepads.Utilities.MarkdownHeadingHelper.PrefixHeading1);
+            Assert.AreEqual("### ข้อความทดสอบ", h1);
+
+            // Body format removes any heading prefix
+            string body = Notepads.Utilities.MarkdownHeadingHelper.FormatLine(h1, Notepads.Utilities.MarkdownHeadingHelper.PrefixBody);
+            Assert.AreEqual("ข้อความทดสอบ", body);
+        }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_MultiLineFormatting_WorksProperly()
+        {
+            string block = "บรรทัดที่หนึ่ง\rบรรทัดที่สอง\rบรรทัดที่สาม";
+            string formatted = Notepads.Utilities.MarkdownHeadingHelper.FormatLines(block, Notepads.Utilities.MarkdownHeadingHelper.PrefixHeading1);
+            Assert.AreEqual("### บรรทัดที่หนึ่ง\r### บรรทัดที่สอง\r### บรรทัดที่สาม", formatted);
+
+            // Toggling all
+            string untoggled = Notepads.Utilities.MarkdownHeadingHelper.FormatLines(formatted, Notepads.Utilities.MarkdownHeadingHelper.PrefixHeading1);
+            Assert.AreEqual("บรรทัดที่หนึ่ง\rบรรทัดที่สอง\rบรรทัดที่สาม", untoggled);
+        }
+
+        [TestMethod]
+        public void MarkdownInlineHelper_BoldFormattingAndToggle_WorksProperly()
+        {
+            string doc = "ยินดีต้อนรับสู่ Notepads โปรแกรมแก้ไขข้อความ";
+
+            // Cursor inside "Notepads" (no selection)
+            int cursor = doc.IndexOf("Notepads") + 3;
+            var (start, end, rep, offset) = Notepads.Utilities.MarkdownInlineHelper.FormatInline(doc, cursor, cursor, "**");
+            string result = doc.Substring(0, start) + rep + doc.Substring(end);
+            Assert.AreEqual("ยินดีต้อนรับสู่ **Notepads** โปรแกรมแก้ไขข้อความ", result);
+
+            // Clicking Bold again on the same word toggles it off!
+            int newCursor = result.IndexOf("Notepads") + 3;
+            var (start2, end2, rep2, offset2) = Notepads.Utilities.MarkdownInlineHelper.FormatInline(result, newCursor, newCursor, "**");
+            string result2 = result.Substring(0, start2) + rep2 + result.Substring(end2);
+            Assert.AreEqual("ยินดีต้อนรับสู่ Notepads โปรแกรมแก้ไขข้อความ", result2);
+        }
+
+        [TestMethod]
+        public void MarkdownInlineHelper_ItalicAndStrikethrough_WorksProperly()
+        {
+            string doc = "ข้อความ ตัวอย่าง ทดสอบ";
+            int selStart = doc.IndexOf("ตัวอย่าง");
+            int selEnd = selStart + "ตัวอย่าง".Length;
+
+            // Italic
+            var (startI, endI, repI, _) = Notepads.Utilities.MarkdownInlineHelper.FormatInline(doc, selStart, selEnd, "*");
+            string italicDoc = doc.Substring(0, startI) + repI + doc.Substring(endI);
+            Assert.AreEqual("ข้อความ *ตัวอย่าง* ทดสอบ", italicDoc);
+
+            // Strikethrough
+            var (startS, endS, repS, _) = Notepads.Utilities.MarkdownInlineHelper.FormatInline(doc, selStart, selEnd, "~~");
+            string strikeDoc = doc.Substring(0, startS) + repS + doc.Substring(endS);
+            Assert.AreEqual("ข้อความ ~~ตัวอย่าง~~ ทดสอบ", strikeDoc);
+
+            // Strikethrough toggle off
+            int sStart = strikeDoc.IndexOf("~~ตัวอย่าง~~");
+            int sEnd = sStart + "~~ตัวอย่าง~~".Length;
+            var (startST, endST, repST, _) = Notepads.Utilities.MarkdownInlineHelper.FormatInline(strikeDoc, sStart, sEnd, "~~");
+            string toggled = strikeDoc.Substring(0, startST) + repST + strikeDoc.Substring(endST);
+            Assert.AreEqual("ข้อความ ตัวอย่าง ทดสอบ", toggled);
+        }
+
+        [TestMethod]
+        public void MarkdownInlineHelper_PreservesSelectionTrailingWhitespace()
+        {
+            string doc = "เลือกคำนี้ ";
+            int selStart = 0;
+            int selEnd = doc.Length; // includes trailing space
+
+            var (start, end, rep, _) = Notepads.Utilities.MarkdownInlineHelper.FormatInline(doc, selStart, selEnd, "**");
+            Assert.AreEqual("**เลือกคำนี้** ", rep);
+        }
     }
 }

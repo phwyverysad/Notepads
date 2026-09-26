@@ -61,6 +61,8 @@ namespace Notepads.Views.MainPage
             {
                 ToolBarMenuStatusBarToggleItem.IsChecked = AppSettingsService.ShowStatusBar;
             }
+
+            UpdateActiveHeadingUI();
         }
 
         // ==================== ไฟล์ (File) Menu Handlers ====================
@@ -257,9 +259,60 @@ namespace Notepads.Views.MainPage
 
         private void HeadingMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is MenuFlyoutItem item && item.Tag is string prefix)
+            string prefix = null;
+            if (sender is Button btn && btn.Tag is string btnPrefix)
             {
-                NotepadsCore.GetSelectedTextEditor()?.FormatLinePrefix(prefix);
+                prefix = btnPrefix;
+            }
+            else if (sender is MenuFlyoutItem item && item.Tag is string itemPrefix)
+            {
+                prefix = itemPrefix;
+            }
+
+            if (prefix != null)
+            {
+                var editor = NotepadsCore.GetSelectedTextEditor();
+                editor?.FormatHeading(prefix);
+                ToolBarHeadingFlyout?.Hide();
+                UpdateActiveHeadingUI();
+            }
+        }
+
+        private void UpdateActiveHeadingUI()
+        {
+            var editor = NotepadsCore.GetSelectedTextEditor();
+            var style = editor != null ? editor.GetCurrentLineHeadingStyle() : Notepads.Utilities.MarkdownHeadingStyle.Body;
+
+            if (ToolBarHeadingButtonText != null)
+            {
+                ToolBarHeadingButtonText.Text = Notepads.Utilities.MarkdownHeadingHelper.GetDisplayName(style);
+            }
+
+            SetHeadingItemState(HeadingItem_Title, HeadingIndicator_Title, style == Notepads.Utilities.MarkdownHeadingStyle.Title);
+            SetHeadingItemState(HeadingItem_Subtitle, HeadingIndicator_Subtitle, style == Notepads.Utilities.MarkdownHeadingStyle.Subtitle);
+            SetHeadingItemState(HeadingItem_H1, HeadingIndicator_H1, style == Notepads.Utilities.MarkdownHeadingStyle.Heading1);
+            SetHeadingItemState(HeadingItem_H2, HeadingIndicator_H2, style == Notepads.Utilities.MarkdownHeadingStyle.Heading2);
+            SetHeadingItemState(HeadingItem_H3, HeadingIndicator_H3, style == Notepads.Utilities.MarkdownHeadingStyle.Heading3);
+            SetHeadingItemState(HeadingItem_H4, HeadingIndicator_H4, style == Notepads.Utilities.MarkdownHeadingStyle.Heading4);
+            SetHeadingItemState(HeadingItem_Body, HeadingIndicator_Body, style == Notepads.Utilities.MarkdownHeadingStyle.Body);
+        }
+
+        private void SetHeadingItemState(Button item, Border indicator, bool isActive)
+        {
+            if (indicator != null)
+            {
+                indicator.Visibility = isActive ? Visibility.Visible : Visibility.Collapsed;
+            }
+            if (item != null)
+            {
+                if (isActive)
+                {
+                    item.Background = (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"];
+                }
+                else
+                {
+                    item.Background = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+                }
             }
         }
 

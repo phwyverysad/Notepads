@@ -83,8 +83,29 @@ namespace Notepads.WebInstaller
             return false;
         }
 
+        internal static void EnsureSideloadingEnabled()
+        {
+            try
+            {
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"))
+                {
+                    key?.SetValue("AllowAllTrustedApps", 1, RegistryValueKind.DWord);
+                }
+            }
+            catch { }
+            try
+            {
+                using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"))
+                {
+                    key?.SetValue("AllowAllTrustedApps", 1, RegistryValueKind.DWord);
+                }
+            }
+            catch { }
+        }
+
         internal static void RegisterAppxPackage(string manifestPath)
         {
+            EnsureSideloadingEnabled();
             try
             {
                 var psPsi = new ProcessStartInfo("powershell.exe",
@@ -101,31 +122,72 @@ namespace Notepads.WebInstaller
 
         internal static void LaunchInstalledApp(string[] args)
         {
+            string argString = args != null && args.Length > 0 ? string.Join(" ", args.Select(a => $"\"{a}\"")) : string.Empty;
+
+            // Tier 1: Protocol launch with optional path argument
             try
             {
-                var protocolPsi = new ProcessStartInfo("notepads:")
+                string targetUri = "notepads:";
+                if (args != null && args.Length > 0 && !string.IsNullOrEmpty(args[0]) && File.Exists(args[0]))
+                {
+                    targetUri = $"notepads:?path={Uri.EscapeDataString(Path.GetFullPath(args[0]))}";
+                }
+                var protocolPsi = new ProcessStartInfo(targetUri)
                 {
                     UseShellExecute = true
                 };
                 Process.Start(protocolPsi);
+                return;
             }
-            catch
+            catch { }
+
+            // Tier 2: Direct AUMID launch via explorer.exe (works across Windows 10 & 11)
+            try
             {
-                // Fallback via PowerShell Start-Process
-                try
+                string[] knownAumids = new[]
                 {
-                    var psPsi = new ProcessStartInfo("powershell.exe", "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command \"Start-Process 'notepads:'\"")
+                    "Notepads_echhpq9pdbte8!App",
+                    "19282JackieLiu.Notepads-Beta_40e66d075a3a4!App"
+                };
+
+                foreach (var aumid in knownAumids)
+                {
+                    var expPsi = new ProcessStartInfo("explorer.exe", $"shell:AppsFolder\\{aumid} {argString}")
                     {
                         UseShellExecute = false,
                         CreateNoWindow = true
                     };
-                    Process.Start(psPsi);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Failed to launch Notepads: " + ex.Message, "Notepads", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var p = Process.Start(expPsi);
+                    if (p != null) return;
                 }
             }
+            catch { }
+
+            // Tier 3: PowerShell dynamic package discovery & launch
+            try
+            {
+                var psPsi = new ProcessStartInfo("powershell.exe",
+                    $"-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command \"$pkg = Get-AppxPackage *Notepads* | Select-Object -First 1; if ($pkg) {{ Start-Process ('shell:AppsFolder\\' + $pkg.PackageFamilyName + '!App') }} else {{ Start-Process 'notepads:' }}\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                Process.Start(psPsi);
+                return;
+            }
+            catch { }
+
+            // Tier 4: Direct executable if present in package folder
+            try
+            {
+                string exePath = Path.Combine(PackageDirectory, "Notepads.exe");
+                if (File.Exists(exePath))
+                {
+                    Process.Start(new ProcessStartInfo(exePath, argString) { UseShellExecute = true });
+                    return;
+                }
+            }
+            catch { }
         }
     }
 

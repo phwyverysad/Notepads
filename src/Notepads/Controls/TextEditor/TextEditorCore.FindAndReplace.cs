@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 //  Copyright (c) 2019-2024, Jiaqi (0x7c13) Liu. All rights reserved.
 //  See LICENSE file in the project root for license information.
 // ---------------------------------------------------------------------------------------------
@@ -28,13 +28,13 @@ namespace Notepads.Controls.TextEditor
 
                 for (; startIndex >= 0; startIndex--)
                 {
-                    if (!char.IsLetterOrDigit(document[startIndex]))
+                    if (!StringExtensions.IsWordCharacter(document[startIndex]))
                         break;
                 }
 
                 for (; endIndex < document.Length; endIndex++)
                 {
-                    if (!char.IsLetterOrDigit(document[endIndex]))
+                    if (!StringExtensions.IsWordCharacter(document[endIndex]))
                         break;
                 }
 
@@ -73,6 +73,7 @@ namespace Notepads.Controls.TextEditor
                 {
                     Document.Selection.StartPosition = index;
                     Document.Selection.EndPosition = index + searchContext.SearchText.Length;
+                    Document.Selection.ScrollIntoView(PointOptions.None);
                 }
                 else
                 {
@@ -86,6 +87,7 @@ namespace Notepads.Controls.TextEditor
                         {
                             Document.Selection.StartPosition = index;
                             Document.Selection.EndPosition = index + searchContext.SearchText.Length;
+                            Document.Selection.ScrollIntoView(PointOptions.None);
                         }
                     }
                 }
@@ -140,6 +142,7 @@ namespace Notepads.Controls.TextEditor
                 {
                     Document.Selection.StartPosition = index;
                     Document.Selection.EndPosition = index + searchContext.SearchText.Length;
+                    Document.Selection.ScrollIntoView(PointOptions.None);
                 }
                 else
                 {
@@ -151,6 +154,7 @@ namespace Notepads.Controls.TextEditor
                     {
                         Document.Selection.StartPosition = index;
                         Document.Selection.EndPosition = index + searchContext.SearchText.Length;
+                        Document.Selection.ScrollIntoView(PointOptions.None);
                     }
                 }
 
@@ -202,9 +206,98 @@ namespace Notepads.Controls.TextEditor
             return false;
         }
 
+        public (int currentMatchIndex, int totalMatches) GetSearchMatchesCount(SearchContext searchContext)
+        {
+            if (string.IsNullOrEmpty(searchContext.SearchText))
+            {
+                return (0, 0);
+            }
+
+            var document = GetText();
+            if (string.IsNullOrEmpty(document))
+            {
+                return (0, 0);
+            }
+
+            var matchIndices = new System.Collections.Generic.List<int>();
+
+            if (searchContext.UseRegex)
+            {
+                try
+                {
+                    string content = document.Replace(RichEditBoxDefaultLineEnding, RegexDefaultLineEnding);
+                    Regex regex = new Regex(searchContext.SearchText,
+                        RegexOptions.Multiline | (searchContext.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase));
+
+                    var matches = regex.Matches(content);
+                    foreach (Match m in matches)
+                    {
+                        matchIndices.Add(m.Index);
+                    }
+                }
+                catch
+                {
+                    return (0, 0);
+                }
+            }
+            else
+            {
+                StringComparison comparison = searchContext.MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+                int pos = 0;
+                int step = Math.Max(1, searchContext.SearchText.Length);
+
+                while (pos < document.Length)
+                {
+                    int found = searchContext.MatchWholeWord
+                        ? document.IndexOfWholeWord(searchContext.SearchText, pos, comparison)
+                        : document.IndexOf(searchContext.SearchText, pos, comparison);
+
+                    if (found == -1) break;
+                    matchIndices.Add(found);
+                    pos = found + step;
+                }
+            }
+
+            int total = matchIndices.Count;
+            if (total == 0) return (0, 0);
+
+            int currentSel = Document.Selection.StartPosition;
+            int currentIdx = 0;
+
+            for (int i = 0; i < matchIndices.Count; i++)
+            {
+                if (matchIndices[i] == currentSel)
+                {
+                    currentIdx = i + 1;
+                    break;
+                }
+            }
+
+            if (currentIdx == 0)
+            {
+                for (int i = 0; i < matchIndices.Count; i++)
+                {
+                    if (matchIndices[i] >= currentSel)
+                    {
+                        currentIdx = i + 1;
+                        break;
+                    }
+                }
+                if (currentIdx == 0) currentIdx = 1;
+            }
+
+            return (currentIdx, total);
+        }
+
         public bool TryFindAndReplaceAll(SearchContext searchContext, string replaceText, out bool regexError)
         {
+            return TryFindAndReplaceAll(searchContext, replaceText, out _, out regexError);
+        }
+
+        public bool TryFindAndReplaceAll(SearchContext searchContext, string replaceText, out int replacedCount, out bool regexError)
+        {
             regexError = false;
+            replacedCount = 0;
             var found = false;
             var text = GetText();
 
@@ -215,8 +308,27 @@ namespace Notepads.Controls.TextEditor
 
             if (searchContext.UseRegex)
             {
-                found = TryFindAndReplaceAllUsingRegex(text, searchContext, replaceText, out regexError, out var output);
-                if (found) text = output;
+                try
+                {
+                    string content = text.Replace(RichEditBoxDefaultLineEnding, RegexDefaultLineEnding);
+                    Regex regex = new Regex(searchContext.SearchText, RegexOptions.Multiline | (searchContext.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase));
+                    var matches = regex.Matches(content);
+                    if (matches.Count > 0)
+                    {
+                        found = true;
+                        replacedCount = matches.Count;
+                        if (searchContext.UseRegex)
+                        {
+                            replaceText = ApplyTabAndLineEndingFix(replaceText);
+                        }
+                        text = regex.Replace(content, replaceText).Replace(RegexDefaultLineEnding, RichEditBoxDefaultLineEnding);
+                    }
+                }
+                catch (Exception)
+                {
+                    regexError = true;
+                    return false;
+                }
             }
             else
             {
@@ -233,6 +345,7 @@ namespace Notepads.Controls.TextEditor
                 while (pos != -1)
                 {
                     found = true;
+                    replacedCount++;
                     text = text.Remove(pos, searchTextLength).Insert(pos, replaceText);
                     pos += replaceTextLength;
                     pos = searchContext.MatchWholeWord
@@ -273,6 +386,7 @@ namespace Notepads.Controls.TextEditor
                     var index = match.Index;
                     Document.Selection.StartPosition = index;
                     Document.Selection.EndPosition = index + match.Length;
+                    Document.Selection.ScrollIntoView(PointOptions.None);
                     return true;
                 }
                 else
@@ -310,6 +424,7 @@ namespace Notepads.Controls.TextEditor
                     var index = match.Index;
                     Document.Selection.StartPosition = index;
                     Document.Selection.EndPosition = index + match.Length;
+                    Document.Selection.ScrollIntoView(PointOptions.None);
                     return true;
                 }
                 else

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -15,4 +15,8 @@
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\Notepads\Utilities\MarkdownHeadingHelper.cs" Link="Utilities\MarkdownHeadingHelper.cs" />
+    <Compile Include="..\Notepads\Extensions\StringExtensions.cs" Link="Extensions\StringExtensions.cs" />
+  </ItemGroup>
 </Project>

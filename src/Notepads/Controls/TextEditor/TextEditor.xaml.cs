@@ -207,6 +207,12 @@ namespace Notepads.Controls.TextEditor
             base.KeyDown += TextEditor_KeyDown;
 
             TextEditorCore.FontZoomFactorChanged += TextEditorCore_OnFontZoomFactorChanged;
+            TextEditorCore.WrapSelectionRequested += TextEditorCore_OnWrapSelectionRequested;
+        }
+
+        private void TextEditorCore_OnWrapSelectionRequested(string prefix, string suffix)
+        {
+            WrapSelection(prefix, suffix);
         }
 
         private void TextEditor_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -224,6 +230,7 @@ namespace Notepads.Controls.TextEditor
             TextEditorCore.KeyDown -= TextEditorCore_OnKeyDown;
             TextEditorCore.CopyTextToWindowsClipboardRequested -= TextEditorCore_CopyTextToWindowsClipboardRequested;
             TextEditorCore.CutSelectedTextToWindowsClipboardRequested -= TextEditorCore_CutSelectedTextToWindowsClipboardRequested;
+            TextEditorCore.WrapSelectionRequested -= TextEditorCore_OnWrapSelectionRequested;
 
             if (TextEditorCore.ContextFlyout is TextEditorContextFlyout contextFlyout)
             {
@@ -457,6 +464,9 @@ namespace Notepads.Controls.TextEditor
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, true, VirtualKey.F, (args) => ShowFindAndReplaceControl(showReplaceBar: true)),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.H, (args) => ShowFindAndReplaceControl(showReplaceBar: true)),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.G, (args) => ShowGoToControl()),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.B, (args) => WrapSelection("**", "**")),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.I, (args) => WrapSelection("*", "*")),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.K, (args) => WrapSelection("[", "](https://)")),
                 new KeyboardCommand<KeyRoutedEventArgs>(false, true, false, VirtualKey.P, (args) => { if (FileTypeUtility.IsPreviewSupported(FileType)) ShowHideContentPreview(); }),
                 new KeyboardCommand<KeyRoutedEventArgs>(false, true, false, VirtualKey.D, (args) => ShowHideSideBySideDiffViewer()),
                 new KeyboardCommand<KeyRoutedEventArgs>(VirtualKey.F3, (args) =>
@@ -974,12 +984,32 @@ namespace Notepads.Controls.TextEditor
                 FindAndReplacePlaceholder.Show();
             }
 
-            findAndReplace.Focus(TextEditorCore.GetSearchString(), FindAndReplaceMode.FindOnly);
+            string searchStr = TextEditorCore.GetSearchString();
+            findAndReplace.Focus(searchStr, FindAndReplaceMode.FindOnly);
+            if (!string.IsNullOrEmpty(searchStr))
+            {
+                var ctx = new SearchContext(searchStr, false, false, false);
+                (int cur, int total) = TextEditorCore.GetSearchMatchesCount(ctx);
+                findAndReplace.UpdateMatchCount(cur, total);
+            }
         }
 
         public void HideFindAndReplaceControl()
         {
             FindAndReplacePlaceholder?.Dismiss();
+        }
+
+        private void FindAndReplaceControl_OnLiveSearchTriggered(object sender, SearchContext context)
+        {
+            if (string.IsNullOrEmpty(context.SearchText))
+            {
+                FindAndReplaceControl?.UpdateMatchCount(0, 0);
+                return;
+            }
+
+            TextEditorCore.TryFindNextAndSelect(context, stopAtEof: false, out bool regexError);
+            (int cur, int total) = TextEditorCore.GetSearchMatchesCount(context);
+            FindAndReplaceControl?.UpdateMatchCount(cur, total, regexError);
         }
 
         private async void FindAndReplaceControl_OnFindAndReplaceButtonClicked(object sender, FindAndReplaceEventArgs e)
@@ -1036,14 +1066,28 @@ namespace Notepads.Controls.TextEditor
                             out regexError);
                     break;
                 case FindAndReplaceMode.ReplaceAll:
+                    int replacedCount = 0;
                     found = TextEditorCore.TryFindAndReplaceAll(
                         findAndReplaceEventArgs.SearchContext,
                         findAndReplaceEventArgs.ReplaceText,
+                        out replacedCount,
                         out regexError);
+
+                    if (found)
+                    {
+                        string tmpl = _resourceLoader.GetString("FindAndReplace_NotificationMsg_ReplacedCount");
+                        string msg = !string.IsNullOrEmpty(tmpl)
+                            ? string.Format(tmpl, replacedCount)
+                            : $"แทนที่ทั้งหมด {replacedCount} รายการสำเร็จ";
+                        NotificationCenter.Instance.PostNotification(msg, 2000);
+                    }
                     break;
             }
 
-            if (!found)
+            (int cur, int total) = TextEditorCore.GetSearchMatchesCount(findAndReplaceEventArgs.SearchContext);
+            FindAndReplaceControl?.UpdateMatchCount(cur, total, regexError);
+
+            if (!found && findAndReplaceEventArgs.FindAndReplaceMode != FindAndReplaceMode.ReplaceAll)
             {
                 if (findAndReplaceEventArgs.SearchContext.UseRegex && regexError)
                 {
@@ -1213,27 +1257,143 @@ namespace Notepads.Controls.TextEditor
         {
             if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
 
-            var selection = TextEditorCore.Document.Selection;
-            string selectedText = selection.Text ?? string.Empty;
+            if (prefix == suffix && !string.IsNullOrEmpty(prefix))
+            {
+                var doc = TextEditorCore.GetText();
+                TextEditorCore.GetTextSelectionPosition(out int start, out int end);
 
-            if (string.IsNullOrEmpty(selectedText))
-            {
-                selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + suffix);
-                selection.StartPosition += prefix.Length;
-                selection.EndPosition = selection.StartPosition;
-            }
-            else
-            {
-                if (selectedText.StartsWith(prefix) && selectedText.EndsWith(suffix) && selectedText.Length >= (prefix.Length + suffix.Length))
+                if (start == 0 && end == 0 && (TextEditorCore.Document.Selection.StartPosition != 0 || TextEditorCore.Document.Selection.EndPosition != 0))
                 {
-                    string unwrapped = selectedText.Substring(prefix.Length, selectedText.Length - prefix.Length - suffix.Length);
-                    selection.SetText(Windows.UI.Text.TextSetOptions.None, unwrapped);
+                    start = TextEditorCore.Document.Selection.StartPosition;
+                    end = TextEditorCore.Document.Selection.EndPosition;
+                }
+
+                if (start > doc.Length) start = doc.Length;
+                if (end > doc.Length) end = doc.Length;
+                if (start > end)
+                {
+                    int temp = start;
+                    start = end;
+                    end = temp;
+                }
+
+                var (replaceStart, replaceEnd, repText, cursorOffset) =
+                    Notepads.Utilities.MarkdownInlineHelper.FormatInline(doc, start, end, prefix);
+
+                TextEditorCore.Document.Selection.SetRange(replaceStart, replaceEnd);
+                TextEditorCore.Document.Selection.SetText(Windows.UI.Text.TextSetOptions.None, repText);
+
+                if (start == end)
+                {
+                    int newPos = replaceStart + cursorOffset;
+                    TextEditorCore.SetTextSelectionPosition(newPos, newPos);
                 }
                 else
                 {
-                    selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + selectedText + suffix);
+                    TextEditorCore.SetTextSelectionPosition(replaceStart, replaceStart + repText.Length);
                 }
             }
+            else
+            {
+                var selection = TextEditorCore.Document.Selection;
+                string selectedText = selection.Text ?? string.Empty;
+
+                if (string.IsNullOrEmpty(selectedText))
+                {
+                    selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + suffix);
+                    int newPos = selection.StartPosition + prefix.Length;
+                    TextEditorCore.SetTextSelectionPosition(newPos, newPos);
+                }
+                else
+                {
+                    if (selectedText.StartsWith(prefix) && selectedText.EndsWith(suffix) && selectedText.Length >= (prefix.Length + suffix.Length))
+                    {
+                        string unwrapped = selectedText.Substring(prefix.Length, selectedText.Length - prefix.Length - suffix.Length);
+                        selection.SetText(Windows.UI.Text.TextSetOptions.None, unwrapped);
+                    }
+                    else
+                    {
+                        selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + selectedText + suffix);
+                    }
+                }
+            }
+            TextEditorCore.Focus(FocusState.Programmatic);
+        }
+
+        public Notepads.Utilities.MarkdownHeadingStyle GetCurrentLineHeadingStyle()
+        {
+            if (!TextEditorCore.IsEnabled) return Notepads.Utilities.MarkdownHeadingStyle.Body;
+            var document = TextEditorCore.GetText();
+            if (string.IsNullOrEmpty(document)) return Notepads.Utilities.MarkdownHeadingStyle.Body;
+
+            TextEditorCore.GetTextSelectionPosition(out int start, out _);
+            if (start > document.Length) start = document.Length;
+
+            int lineStart = start;
+            while (lineStart > 0 && document[lineStart - 1] != '\r' && document[lineStart - 1] != '\n')
+            {
+                lineStart--;
+            }
+
+            int lineEnd = start;
+            while (lineEnd < document.Length && document[lineEnd] != '\r' && document[lineEnd] != '\n')
+            {
+                lineEnd++;
+            }
+
+            string currentLine = document.Substring(lineStart, lineEnd - lineStart);
+            return Notepads.Utilities.MarkdownHeadingHelper.DetectStyle(currentLine);
+        }
+
+        public void FormatHeading(string prefix)
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+
+            var document = TextEditorCore.GetText();
+            TextEditorCore.GetTextSelectionPosition(out int start, out int end);
+            if (start > document.Length) start = document.Length;
+            if (end > document.Length) end = document.Length;
+
+            int lineStart = start;
+            while (lineStart > 0 && document[lineStart - 1] != '\r' && document[lineStart - 1] != '\n')
+            {
+                lineStart--;
+            }
+
+            int lineEnd = end;
+            if (end > start && end > 0 && (document[end - 1] == '\r' || document[end - 1] == '\n') && lineEnd == end)
+            {
+                lineEnd = end - 1;
+                while (lineEnd > lineStart && (document[lineEnd] == '\r' || document[lineEnd] == '\n'))
+                {
+                    lineEnd--;
+                }
+            }
+
+            while (lineEnd < document.Length && document[lineEnd] != '\r' && document[lineEnd] != '\n')
+            {
+                lineEnd++;
+            }
+
+            if (lineEnd < lineStart) lineEnd = lineStart;
+            string selectedBlock = document.Substring(lineStart, lineEnd - lineStart);
+
+            string formattedBlock = Notepads.Utilities.MarkdownHeadingHelper.FormatLines(selectedBlock, prefix);
+
+            TextEditorCore.Document.Selection.SetRange(lineStart, lineEnd);
+            TextEditorCore.Document.Selection.SetText(Windows.UI.Text.TextSetOptions.None, formattedBlock);
+
+            if (start == end)
+            {
+                int offset = formattedBlock.Length - selectedBlock.Length;
+                int newCursorPos = Math.Max(lineStart, Math.Min(start + offset, lineStart + formattedBlock.Length));
+                TextEditorCore.Document.Selection.SetRange(newCursorPos, newCursorPos);
+            }
+            else
+            {
+                TextEditorCore.Document.Selection.SetRange(lineStart, lineStart + formattedBlock.Length);
+            }
+
             TextEditorCore.Focus(FocusState.Programmatic);
         }
 
@@ -1241,19 +1401,86 @@ namespace Notepads.Controls.TextEditor
         {
             if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
 
-            var selection = TextEditorCore.Document.Selection;
-            selection.Expand(Windows.UI.Text.TextRangeUnit.Paragraph);
-            string lineText = selection.Text ?? string.Empty;
+            var document = TextEditorCore.GetText();
+            TextEditorCore.GetTextSelectionPosition(out int start, out int end);
+            if (start > document.Length) start = document.Length;
+            if (end > document.Length) end = document.Length;
 
-            string trimmed = lineText.TrimStart('#', '-', '*', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', ' ');
-            if (!string.IsNullOrEmpty(prefix))
+            int lineStart = start;
+            while (lineStart > 0 && document[lineStart - 1] != '\r' && document[lineStart - 1] != '\n')
             {
-                selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + " " + trimmed);
+                lineStart--;
+            }
+
+            int lineEnd = end;
+            if (end > start && end > 0 && (document[end - 1] == '\r' || document[end - 1] == '\n') && lineEnd == end)
+            {
+                lineEnd = end - 1;
+                while (lineEnd > lineStart && (document[lineEnd] == '\r' || document[lineEnd] == '\n'))
+                {
+                    lineEnd--;
+                }
+            }
+
+            while (lineEnd < document.Length && document[lineEnd] != '\r' && document[lineEnd] != '\n')
+            {
+                lineEnd++;
+            }
+
+            if (lineEnd < lineStart) lineEnd = lineStart;
+            string selectedBlock = document.Substring(lineStart, lineEnd - lineStart);
+            var lines = selectedBlock.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string delimiter = selectedBlock.Contains("\r\n") ? "\r\n" : (selectedBlock.Contains("\r") ? "\r" : "\n");
+
+            var listRegex = new System.Text.RegularExpressions.Regex(@"^(\s*)(-\s+|\*\s+|\d+\.\s+)");
+            var formattedLines = new System.Collections.Generic.List<string>(lines.Length);
+
+            foreach (var l in lines)
+            {
+                if (string.IsNullOrWhiteSpace(l))
+                {
+                    formattedLines.Add(l);
+                    continue;
+                }
+
+                var match = listRegex.Match(l);
+                if (match.Success)
+                {
+                    string indent = match.Groups[1].Value;
+                    string existing = match.Groups[2].Value;
+                    if (existing == prefix)
+                    {
+                        formattedLines.Add(indent + l.Substring(match.Length));
+                    }
+                    else
+                    {
+                        formattedLines.Add(indent + prefix + l.Substring(match.Length));
+                    }
+                }
+                else
+                {
+                    string trimmed = l.TrimStart();
+                    int leadingSpaces = l.Length - trimmed.Length;
+                    string indent = leadingSpaces > 0 ? l.Substring(0, leadingSpaces) : string.Empty;
+                    formattedLines.Add(indent + prefix + trimmed);
+                }
+            }
+
+            string formattedBlock = string.Join(delimiter, formattedLines);
+            TextEditorCore.Document.Selection.SetRange(lineStart, lineEnd);
+            TextEditorCore.Document.Selection.SetText(Windows.UI.Text.TextSetOptions.None, formattedBlock);
+
+            if (start == end)
+            {
+                int offset = formattedBlock.Length - selectedBlock.Length;
+                int newCursorPos = Math.Max(lineStart, Math.Min(start + offset, lineStart + formattedBlock.Length));
+                TextEditorCore.Document.Selection.SetRange(newCursorPos, newCursorPos);
             }
             else
             {
-                selection.SetText(Windows.UI.Text.TextSetOptions.None, trimmed);
+                TextEditorCore.Document.Selection.SetRange(lineStart, lineStart + formattedBlock.Length);
             }
+
             TextEditorCore.Focus(FocusState.Programmatic);
         }
 

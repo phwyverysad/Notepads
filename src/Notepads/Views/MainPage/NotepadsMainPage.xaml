@@ -499,27 +499,212 @@
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Style="{ThemeResource ButtonRevealStyle}"
-                                                ToolTipService.ToolTip="หัวเรื่อง (Heading)">
+                                                ToolTipService.ToolTip="ลักษณะข้อความ (Text Style)">
                                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <TextBlock Text="หัวเรื่อง" FontSize="12" VerticalAlignment="Center"/>
-                                                <Border Background="{ThemeResource SystemControlHighlightListAccentLowBrush}" CornerRadius="2" Padding="2,0,2,0">
-                                                    <TextBlock Text="H1" FontWeight="Bold" FontSize="11" VerticalAlignment="Center"/>
-                                                </Border>
+                                                <TextBlock x:Name="ToolBarHeadingButtonText" Text="เนื้อความ" FontSize="12" VerticalAlignment="Center"/>
                                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE70D;" FontSize="9" VerticalAlignment="Center"/>
                                             </StackPanel>
                                             <Button.Flyout>
-                                                <MenuFlyout Placement="BottomEdgeAlignedLeft">
-                                                    <MenuFlyoutItem Text="หัวเรื่อง 1" Tag="# " Click="HeadingMenuItem_Click">
-                                                        <MenuFlyoutItem.Icon>
-                                                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8D2;"/>
-                                                        </MenuFlyoutItem.Icon>
-                                                    </MenuFlyoutItem>
-                                                    <MenuFlyoutItem Text="หัวเรื่อง 2" Tag="## " Click="HeadingMenuItem_Click"/>
-                                                    <MenuFlyoutItem Text="หัวเรื่อง 3" Tag="### " Click="HeadingMenuItem_Click"/>
-                                                    <MenuFlyoutItem Text="หัวเรื่อง 4" Tag="#### " Click="HeadingMenuItem_Click"/>
-                                                    <MenuFlyoutItem Text="หัวเรื่อง 5" Tag="##### " Click="HeadingMenuItem_Click"/>
-                                                    <MenuFlyoutItem Text="หัวเรื่อง 6" Tag="###### " Click="HeadingMenuItem_Click"/>
-                                                </MenuFlyout>
+                                                <Flyout x:Name="ToolBarHeadingFlyout" Placement="BottomEdgeAlignedLeft">
+                                                    <Flyout.FlyoutPresenterStyle>
+                                                        <Style TargetType="FlyoutPresenter">
+                                                            <Setter Property="Padding" Value="4,4,4,4"/>
+                                                            <Setter Property="CornerRadius" Value="8"/>
+                                                            <Setter Property="MinWidth" Value="140"/>
+                                                            <Setter Property="BorderThickness" Value="1"/>
+                                                        </Style>
+                                                    </Flyout.FlyoutPresenterStyle>
+                                                    <StackPanel Orientation="Vertical" Spacing="1" MinWidth="130">
+                                                        <!-- 1. ชื่อ (Title) -->
+                                                        <Button x:Name="HeadingItem_Title"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Padding="4,4,8,4"
+                                                                CornerRadius="4"
+                                                                Tag="# "
+                                                                Click="HeadingMenuItem_Click">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="10"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border x:Name="HeadingIndicator_Title"
+                                                                        Grid.Column="0"
+                                                                        Width="3"
+                                                                        Height="18"
+                                                                        CornerRadius="1.5"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                                        Visibility="Collapsed"/>
+                                                                <TextBlock Grid.Column="1" Text="ชื่อ" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Button>
+
+                                                        <!-- 2. คำบรรยาย (Subtitle) -->
+                                                        <Button x:Name="HeadingItem_Subtitle"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Padding="4,4,8,4"
+                                                                CornerRadius="4"
+                                                                Tag="## "
+                                                                Click="HeadingMenuItem_Click">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="10"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border x:Name="HeadingIndicator_Subtitle"
+                                                                        Grid.Column="0"
+                                                                        Width="3"
+                                                                        Height="16"
+                                                                        CornerRadius="1.5"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                                        Visibility="Collapsed"/>
+                                                                <TextBlock Grid.Column="1" Text="คำบรรยาย" FontSize="17" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Button>
+
+                                                        <!-- 3. ส่วนหัว (Heading 1) -->
+                                                        <Button x:Name="HeadingItem_H1"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Padding="4,4,8,4"
+                                                                CornerRadius="4"
+                                                                Tag="### "
+                                                                Click="HeadingMenuItem_Click">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="10"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border x:Name="HeadingIndicator_H1"
+                                                                        Grid.Column="0"
+                                                                        Width="3"
+                                                                        Height="16"
+                                                                        CornerRadius="1.5"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                                        Visibility="Collapsed"/>
+                                                                <TextBlock Grid.Column="1" Text="ส่วนหัว" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Button>
+
+                                                        <!-- 4. หัวเรื่องย่อย (Heading 2) -->
+                                                        <Button x:Name="HeadingItem_H2"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Padding="4,3,8,3"
+                                                                CornerRadius="4"
+                                                                Tag="#### "
+                                                                Click="HeadingMenuItem_Click">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="10"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border x:Name="HeadingIndicator_H2"
+                                                                        Grid.Column="0"
+                                                                        Width="3"
+                                                                        Height="14"
+                                                                        CornerRadius="1.5"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                                        Visibility="Collapsed"/>
+                                                                <TextBlock Grid.Column="1" Text="หัวเรื่องย่อย" FontSize="14" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Button>
+
+                                                        <!-- 5. ส่วน (Heading 3) -->
+                                                        <Button x:Name="HeadingItem_H3"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Padding="4,3,8,3"
+                                                                CornerRadius="4"
+                                                                Tag="##### "
+                                                                Click="HeadingMenuItem_Click">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="10"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border x:Name="HeadingIndicator_H3"
+                                                                        Grid.Column="0"
+                                                                        Width="3"
+                                                                        Height="14"
+                                                                        CornerRadius="1.5"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                                        Visibility="Collapsed"/>
+                                                                <TextBlock Grid.Column="1" Text="ส่วน" FontSize="13" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Button>
+
+                                                        <!-- 6. ส่วนย่อย (Heading 4) -->
+                                                        <Button x:Name="HeadingItem_H4"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Padding="4,3,8,3"
+                                                                CornerRadius="4"
+                                                                Tag="###### "
+                                                                Click="HeadingMenuItem_Click">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="10"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border x:Name="HeadingIndicator_H4"
+                                                                        Grid.Column="0"
+                                                                        Width="3"
+                                                                        Height="13"
+                                                                        CornerRadius="1.5"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                                        Visibility="Collapsed"/>
+                                                                <TextBlock Grid.Column="1" Text="ส่วนย่อย" FontSize="12" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Button>
+
+                                                        <!-- 7. เนื้อความ (Body) -->
+                                                        <Button x:Name="HeadingItem_Body"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Padding="4,4,8,4"
+                                                                CornerRadius="4"
+                                                                Tag=""
+                                                                Click="HeadingMenuItem_Click">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="10"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border x:Name="HeadingIndicator_Body"
+                                                                        Grid.Column="0"
+                                                                        Width="3"
+                                                                        Height="16"
+                                                                        CornerRadius="1.5"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                                        Visibility="Visible"/>
+                                                                <TextBlock Grid.Column="1" Text="เนื้อความ" FontSize="13" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Flyout>
                                             </Button.Flyout>
                                         </Button>
 
@@ -578,6 +763,9 @@
                                                 Style="{ThemeResource ButtonRevealStyle}"
                                                 Click="ToolBarBoldButton_Click"
                                                 ToolTipService.ToolTip="ตัวหนา (Ctrl+B)">
+                                            <Button.KeyboardAccelerators>
+                                                <KeyboardAccelerator Key="B" Modifiers="Control" />
+                                            </Button.KeyboardAccelerators>
                                             <TextBlock Text="B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         </Button>
 
@@ -591,6 +779,9 @@
                                                 Style="{ThemeResource ButtonRevealStyle}"
                                                 Click="ToolBarItalicButton_Click"
                                                 ToolTipService.ToolTip="ตัวเอียง (Ctrl+I)">
+                                            <Button.KeyboardAccelerators>
+                                                <KeyboardAccelerator Key="I" Modifiers="Control" />
+                                            </Button.KeyboardAccelerators>
                                             <TextBlock Text="I" FontStyle="Italic" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         </Button>
 
@@ -617,6 +808,9 @@
                                                 Style="{ThemeResource ButtonRevealStyle}"
                                                 Click="ToolBarLinkButton_Click"
                                                 ToolTipService.ToolTip="แทรกลิงก์ (Ctrl+K)">
+                                            <Button.KeyboardAccelerators>
+                                                <KeyboardAccelerator Key="K" Modifiers="Control" />
+                                            </Button.KeyboardAccelerators>
                                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE71B;" FontSize="13"/>
                                         </Button>
 

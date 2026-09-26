@@ -165,6 +165,10 @@ namespace Notepads.Controls.TextEditor
 
         void FormatLinePrefix(string prefix);
 
+        void FormatHeading(string prefix);
+
+        Notepads.Utilities.MarkdownHeadingStyle GetCurrentLineHeadingStyle();
+
         void InsertTable(int rows, int cols);
 
         void ClearFormatting();
