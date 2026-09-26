@@ -285,45 +285,49 @@ namespace Notepads.Views.MainPage
 
         private void UpdateActiveFormattingUI()
         {
-            var editor = NotepadsCore.GetSelectedTextEditor();
-            var style = editor != null ? editor.GetCurrentLineHeadingStyle() : Notepads.Utilities.MarkdownHeadingStyle.Body;
-
-            if (ToolBarHeadingButtonText != null)
+            try
             {
-                ToolBarHeadingButtonText.Text = Notepads.Utilities.MarkdownHeadingHelper.GetDisplayName(style);
-            }
+                var editor = NotepadsCore.GetSelectedTextEditor();
+                var style = editor != null ? editor.GetCurrentLineHeadingStyle() : Notepads.Utilities.MarkdownHeadingStyle.Body;
 
-            SetHeadingItemState(HeadingItem_Title, HeadingIndicator_Title, style == Notepads.Utilities.MarkdownHeadingStyle.Title);
-            SetHeadingItemState(HeadingItem_Subtitle, HeadingIndicator_Subtitle, style == Notepads.Utilities.MarkdownHeadingStyle.Subtitle);
-            SetHeadingItemState(HeadingItem_H1, HeadingIndicator_H1, style == Notepads.Utilities.MarkdownHeadingStyle.Heading1);
-            SetHeadingItemState(HeadingItem_H2, HeadingIndicator_H2, style == Notepads.Utilities.MarkdownHeadingStyle.Heading2);
-            SetHeadingItemState(HeadingItem_H3, HeadingIndicator_H3, style == Notepads.Utilities.MarkdownHeadingStyle.Heading3);
-            SetHeadingItemState(HeadingItem_H4, HeadingIndicator_H4, style == Notepads.Utilities.MarkdownHeadingStyle.Heading4);
-            SetHeadingItemState(HeadingItem_Body, HeadingIndicator_Body, style == Notepads.Utilities.MarkdownHeadingStyle.Body);
+                if (ToolBarHeadingButtonText != null)
+                {
+                    ToolBarHeadingButtonText.Text = Notepads.Utilities.MarkdownHeadingHelper.GetDisplayName(style);
+                }
 
-            if (ToolBarBoldButton != null)
-            {
-                bool isBold = editor != null && editor.IsBold();
-                ToolBarBoldButton.Background = isBold
-                    ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
-                    : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
-            }
+                SetHeadingItemState(HeadingItem_Title, HeadingIndicator_Title, style == Notepads.Utilities.MarkdownHeadingStyle.Title);
+                SetHeadingItemState(HeadingItem_Subtitle, HeadingIndicator_Subtitle, style == Notepads.Utilities.MarkdownHeadingStyle.Subtitle);
+                SetHeadingItemState(HeadingItem_H1, HeadingIndicator_H1, style == Notepads.Utilities.MarkdownHeadingStyle.Heading1);
+                SetHeadingItemState(HeadingItem_H2, HeadingIndicator_H2, style == Notepads.Utilities.MarkdownHeadingStyle.Heading2);
+                SetHeadingItemState(HeadingItem_H3, HeadingIndicator_H3, style == Notepads.Utilities.MarkdownHeadingStyle.Heading3);
+                SetHeadingItemState(HeadingItem_H4, HeadingIndicator_H4, style == Notepads.Utilities.MarkdownHeadingStyle.Heading4);
+                SetHeadingItemState(HeadingItem_Body, HeadingIndicator_Body, style == Notepads.Utilities.MarkdownHeadingStyle.Body);
 
-            if (ToolBarItalicButton != null)
-            {
-                bool isItalic = editor != null && editor.IsItalic();
-                ToolBarItalicButton.Background = isItalic
-                    ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
-                    : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
-            }
+                if (ToolBarBoldButton != null)
+                {
+                    bool isBold = editor != null && editor.IsBold();
+                    ToolBarBoldButton.Background = isBold
+                        ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
+                        : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+                }
 
-            if (ToolBarStrikethroughButton != null)
-            {
-                bool isStrikethrough = editor != null && editor.IsStrikethrough();
-                ToolBarStrikethroughButton.Background = isStrikethrough
-                    ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
-                    : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+                if (ToolBarItalicButton != null)
+                {
+                    bool isItalic = editor != null && editor.IsItalic();
+                    ToolBarItalicButton.Background = isItalic
+                        ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
+                        : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+                }
+
+                if (ToolBarStrikethroughButton != null)
+                {
+                    bool isStrikethrough = editor != null && editor.IsStrikethrough();
+                    ToolBarStrikethroughButton.Background = isStrikethrough
+                        ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
+                        : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+                }
             }
+            catch { }
         }
 
         private void SetHeadingItemState(Button item, Border indicator, bool isActive)

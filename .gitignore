@@ -356,3 +356,4 @@ Thumbs.db
 
 dist/*.zip
 dist/*.msix
+dist/*.config
