@@ -267,6 +267,7 @@ namespace Notepads.Controls.TextEditor
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.J, (args) => JoinText()),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.B, (args) => WrapSelectionRequested?.Invoke("**", "**")),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.I, (args) => WrapSelectionRequested?.Invoke("*", "*")),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, true, VirtualKey.X, (args) => WrapSelectionRequested?.Invoke("~~", "~~")),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.K, (args) => WrapSelectionRequested?.Invoke("[", "](https://)")),
                 new KeyboardCommand<KeyRoutedEventArgs>(VirtualKey.Tab, (args) => AddIndentation(AppSettingsService.EditorDefaultTabIndents)),
                 new KeyboardCommand<KeyRoutedEventArgs>(false, false, true, VirtualKey.Tab, (args) => RemoveIndentation(AppSettingsService.EditorDefaultTabIndents)),
@@ -756,6 +757,14 @@ namespace Notepads.Controls.TextEditor
             var leadingSpacesAndTabs = lines[startLineIndex - 1].Substring(0, startColumnIndex - 1).LeadingSpacesAndTabs();
             Document.Selection.SetText(TextSetOptions.None, RichEditBoxDefaultLineEnding + leadingSpacesAndTabs);
             Document.Selection.StartPosition = Document.Selection.EndPosition;
+
+            // If the previous line was a heading, reset the new line to normal body font size and weight
+            var defaultSize = (float)FontSize;
+            if (Document.Selection.CharacterFormat.Size > defaultSize + 0.5f)
+            {
+                Document.Selection.CharacterFormat.Size = defaultSize;
+                Document.Selection.CharacterFormat.Bold = FormatEffect.Off;
+            }
         }
 
         private void OnPointerLeftButtonDown(PointerRoutedEventArgs args)

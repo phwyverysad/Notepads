@@ -464,8 +464,9 @@ namespace Notepads.Controls.TextEditor
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, true, VirtualKey.F, (args) => ShowFindAndReplaceControl(showReplaceBar: true)),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.H, (args) => ShowFindAndReplaceControl(showReplaceBar: true)),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.G, (args) => ShowGoToControl()),
-                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.B, (args) => WrapSelection("**", "**")),
-                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.I, (args) => WrapSelection("*", "*")),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.B, (args) => FormatBold()),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.I, (args) => FormatItalic()),
+                new KeyboardCommand<KeyRoutedEventArgs>(true, false, true, VirtualKey.X, (args) => FormatStrikethrough()),
                 new KeyboardCommand<KeyRoutedEventArgs>(true, false, false, VirtualKey.K, (args) => WrapSelection("[", "](https://)")),
                 new KeyboardCommand<KeyRoutedEventArgs>(false, true, false, VirtualKey.P, (args) => { if (FileTypeUtility.IsPreviewSupported(FileType)) ShowHideContentPreview(); }),
                 new KeyboardCommand<KeyRoutedEventArgs>(false, true, false, VirtualKey.D, (args) => ShowHideSideBySideDiffViewer()),
@@ -1253,68 +1254,193 @@ namespace Notepads.Controls.TextEditor
             return TextEditorCore.TextWrapping == TextWrapping.Wrap || TextEditorCore.TextWrapping == TextWrapping.WrapWholeWords;
         }
 
-        public void WrapSelection(string prefix, string suffix)
+        public void FormatBold()
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+            ApplyCharacterFormatting("Bold");
+        }
+
+        public void FormatItalic()
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+            ApplyCharacterFormatting("Italic");
+        }
+
+        public void FormatStrikethrough()
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+            ApplyCharacterFormatting("Strikethrough");
+        }
+
+        public bool IsBold()
+        {
+            if (!TextEditorCore.IsEnabled) return false;
+            return TextEditorCore.Document.Selection.CharacterFormat.Bold == Windows.UI.Text.FormatEffect.On;
+        }
+
+        public bool IsItalic()
+        {
+            if (!TextEditorCore.IsEnabled) return false;
+            return TextEditorCore.Document.Selection.CharacterFormat.Italic == Windows.UI.Text.FormatEffect.On;
+        }
+
+        public bool IsStrikethrough()
+        {
+            if (!TextEditorCore.IsEnabled) return false;
+            return TextEditorCore.Document.Selection.CharacterFormat.Strikethrough == Windows.UI.Text.FormatEffect.On;
+        }
+
+        private void ApplyCharacterFormatting(string formatType)
         {
             if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
 
-            if (prefix == suffix && !string.IsNullOrEmpty(prefix))
+            var selection = TextEditorCore.Document.Selection;
+            int start = selection.StartPosition;
+            int end = selection.EndPosition;
+            if (start > end) { int t = start; start = end; end = t; }
+
+            var doc = TextEditorCore.GetText() ?? string.Empty;
+
+            if (start == end)
             {
-                var doc = TextEditorCore.GetText();
-                TextEditorCore.GetTextSelectionPosition(out int start, out int end);
-
-                if (start == 0 && end == 0 && (TextEditorCore.Document.Selection.StartPosition != 0 || TextEditorCore.Document.Selection.EndPosition != 0))
+                int wordStart = start;
+                while (wordStart > 0 && wordStart - 1 < doc.Length && Notepads.Extensions.StringExtensions.IsWordCharacter(doc[wordStart - 1]))
                 {
-                    start = TextEditorCore.Document.Selection.StartPosition;
-                    end = TextEditorCore.Document.Selection.EndPosition;
+                    wordStart--;
+                }
+                int wordEnd = start;
+                while (wordEnd < doc.Length && Notepads.Extensions.StringExtensions.IsWordCharacter(doc[wordEnd]))
+                {
+                    wordEnd++;
                 }
 
-                if (start > doc.Length) start = doc.Length;
-                if (end > doc.Length) end = doc.Length;
-                if (start > end)
+                if (wordStart < wordEnd)
                 {
-                    int temp = start;
-                    start = end;
-                    end = temp;
-                }
+                    var wordRange = TextEditorCore.Document.GetRange(wordStart, wordEnd);
+                    string wordText = wordRange.Text ?? string.Empty;
+                    string rawMarker = formatType == "Bold" ? "**" : (formatType == "Italic" ? "*" : "~~");
 
-                var (replaceStart, replaceEnd, repText, cursorOffset) =
-                    Notepads.Utilities.MarkdownInlineHelper.FormatInline(doc, start, end, prefix);
+                    if (wordStart >= rawMarker.Length && wordEnd + rawMarker.Length <= doc.Length &&
+                        doc.Substring(wordStart - rawMarker.Length, rawMarker.Length) == rawMarker &&
+                        doc.Substring(wordEnd, rawMarker.Length) == rawMarker)
+                    {
+                        var fullRange = TextEditorCore.Document.GetRange(wordStart - rawMarker.Length, wordEnd + rawMarker.Length);
+                        fullRange.SetText(Windows.UI.Text.TextSetOptions.None, wordText);
+                        wordStart -= rawMarker.Length;
+                        wordEnd = wordStart + wordText.Length;
+                        wordRange = TextEditorCore.Document.GetRange(wordStart, wordEnd);
+                    }
 
-                TextEditorCore.Document.Selection.SetRange(replaceStart, replaceEnd);
-                TextEditorCore.Document.Selection.SetText(Windows.UI.Text.TextSetOptions.None, repText);
-
-                if (start == end)
-                {
-                    int newPos = replaceStart + cursorOffset;
-                    TextEditorCore.SetTextSelectionPosition(newPos, newPos);
+                    ApplyEffectToRange(wordRange, formatType);
+                    TextEditorCore.Document.Selection.SetRange(wordStart, wordEnd);
                 }
                 else
                 {
-                    TextEditorCore.SetTextSelectionPosition(replaceStart, replaceStart + repText.Length);
+                    ApplyEffectToFormat(TextEditorCore.Document.Selection.CharacterFormat, formatType);
                 }
             }
             else
             {
-                var selection = TextEditorCore.Document.Selection;
                 string selectedText = selection.Text ?? string.Empty;
+                string rawMarker = formatType == "Bold" ? "**" : (formatType == "Italic" ? "*" : "~~");
 
-                if (string.IsNullOrEmpty(selectedText))
+                if (selectedText.StartsWith(rawMarker) && selectedText.EndsWith(rawMarker) && selectedText.Length >= rawMarker.Length * 2)
                 {
-                    selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + suffix);
-                    int newPos = selection.StartPosition + prefix.Length;
-                    TextEditorCore.SetTextSelectionPosition(newPos, newPos);
+                    string stripped = selectedText.Substring(rawMarker.Length, selectedText.Length - rawMarker.Length * 2);
+                    selection.SetText(Windows.UI.Text.TextSetOptions.None, stripped);
+                    end = start + stripped.Length;
+                    selection.SetRange(start, end);
+                }
+
+                ApplyEffectToRange(selection, formatType);
+            }
+
+            TextEditorCore.Focus(FocusState.Programmatic);
+        }
+
+        private void ApplyEffectToRange(Windows.UI.Text.ITextRange range, string formatType)
+        {
+            switch (formatType)
+            {
+                case "Bold":
+                    range.CharacterFormat.Bold = range.CharacterFormat.Bold == Windows.UI.Text.FormatEffect.On
+                        ? Windows.UI.Text.FormatEffect.Off
+                        : Windows.UI.Text.FormatEffect.On;
+                    break;
+                case "Italic":
+                    range.CharacterFormat.Italic = range.CharacterFormat.Italic == Windows.UI.Text.FormatEffect.On
+                        ? Windows.UI.Text.FormatEffect.Off
+                        : Windows.UI.Text.FormatEffect.On;
+                    break;
+                case "Strikethrough":
+                    range.CharacterFormat.Strikethrough = range.CharacterFormat.Strikethrough == Windows.UI.Text.FormatEffect.On
+                        ? Windows.UI.Text.FormatEffect.Off
+                        : Windows.UI.Text.FormatEffect.On;
+                    break;
+            }
+        }
+
+        private void ApplyEffectToFormat(Windows.UI.Text.ITextCharacterFormat format, string formatType)
+        {
+            switch (formatType)
+            {
+                case "Bold":
+                    format.Bold = format.Bold == Windows.UI.Text.FormatEffect.On
+                        ? Windows.UI.Text.FormatEffect.Off
+                        : Windows.UI.Text.FormatEffect.On;
+                    break;
+                case "Italic":
+                    format.Italic = format.Italic == Windows.UI.Text.FormatEffect.On
+                        ? Windows.UI.Text.FormatEffect.Off
+                        : Windows.UI.Text.FormatEffect.On;
+                    break;
+                case "Strikethrough":
+                    format.Strikethrough = format.Strikethrough == Windows.UI.Text.FormatEffect.On
+                        ? Windows.UI.Text.FormatEffect.Off
+                        : Windows.UI.Text.FormatEffect.On;
+                    break;
+            }
+        }
+
+        public void WrapSelection(string prefix, string suffix)
+        {
+            if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
+
+            if (prefix == "**" && suffix == "**")
+            {
+                FormatBold();
+                return;
+            }
+            if (prefix == "*" && suffix == "*")
+            {
+                FormatItalic();
+                return;
+            }
+            if (prefix == "~~" && suffix == "~~")
+            {
+                FormatStrikethrough();
+                return;
+            }
+
+            var selection = TextEditorCore.Document.Selection;
+            string selectedText = selection.Text ?? string.Empty;
+
+            if (string.IsNullOrEmpty(selectedText))
+            {
+                selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + suffix);
+                int newPos = selection.StartPosition + prefix.Length;
+                TextEditorCore.SetTextSelectionPosition(newPos, newPos);
+            }
+            else
+            {
+                if (selectedText.StartsWith(prefix) && selectedText.EndsWith(suffix) && selectedText.Length >= (prefix.Length + suffix.Length))
+                {
+                    string unwrapped = selectedText.Substring(prefix.Length, selectedText.Length - prefix.Length - suffix.Length);
+                    selection.SetText(Windows.UI.Text.TextSetOptions.None, unwrapped);
                 }
                 else
                 {
-                    if (selectedText.StartsWith(prefix) && selectedText.EndsWith(suffix) && selectedText.Length >= (prefix.Length + suffix.Length))
-                    {
-                        string unwrapped = selectedText.Substring(prefix.Length, selectedText.Length - prefix.Length - suffix.Length);
-                        selection.SetText(Windows.UI.Text.TextSetOptions.None, unwrapped);
-                    }
-                    else
-                    {
-                        selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + selectedText + suffix);
-                    }
+                    selection.SetText(Windows.UI.Text.TextSetOptions.None, prefix + selectedText + suffix);
                 }
             }
             TextEditorCore.Focus(FocusState.Programmatic);
@@ -1324,7 +1450,16 @@ namespace Notepads.Controls.TextEditor
         {
             if (!TextEditorCore.IsEnabled) return Notepads.Utilities.MarkdownHeadingStyle.Body;
             var document = TextEditorCore.GetText();
-            if (string.IsNullOrEmpty(document)) return Notepads.Utilities.MarkdownHeadingStyle.Body;
+            float baseSize = (float)TextEditorCore.FontSize;
+
+            float selSize = TextEditorCore.Document.Selection.CharacterFormat.Size;
+            bool selBold = TextEditorCore.Document.Selection.CharacterFormat.Bold == Windows.UI.Text.FormatEffect.On;
+            var detectedFromSel = Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(selSize, selBold, baseSize);
+
+            if (string.IsNullOrEmpty(document))
+            {
+                return detectedFromSel;
+            }
 
             TextEditorCore.GetTextSelectionPosition(out int start, out _);
             if (start > document.Length) start = document.Length;
@@ -1341,57 +1476,105 @@ namespace Notepads.Controls.TextEditor
                 lineEnd++;
             }
 
-            string currentLine = document.Substring(lineStart, lineEnd - lineStart);
-            return Notepads.Utilities.MarkdownHeadingHelper.DetectStyle(currentLine);
+            if (lineEnd > lineStart)
+            {
+                var lineRange = TextEditorCore.Document.GetRange(lineStart, Math.Min(lineStart + 1, lineEnd));
+                float lineSize = lineRange.CharacterFormat.Size;
+                bool lineBold = lineRange.CharacterFormat.Bold == Windows.UI.Text.FormatEffect.On;
+                var detectedFromLine = Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(lineSize, lineBold, baseSize);
+                if (detectedFromLine != Notepads.Utilities.MarkdownHeadingStyle.Body)
+                {
+                    return detectedFromLine;
+                }
+
+                string currentLine = document.Substring(lineStart, lineEnd - lineStart);
+                return Notepads.Utilities.MarkdownHeadingHelper.DetectStyle(currentLine);
+            }
+
+            return detectedFromSel;
         }
 
         public void FormatHeading(string prefix)
         {
             if (!TextEditorCore.IsEnabled || Mode != TextEditorMode.Editing) return;
 
-            var document = TextEditorCore.GetText();
+            var targetStyle = Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix(prefix);
+            var doc = TextEditorCore.GetText() ?? string.Empty;
             TextEditorCore.GetTextSelectionPosition(out int start, out int end);
-            if (start > document.Length) start = document.Length;
-            if (end > document.Length) end = document.Length;
+            if (start > doc.Length) start = doc.Length;
+            if (end > doc.Length) end = doc.Length;
+            if (start > end) { int t = start; start = end; end = t; }
 
             int lineStart = start;
-            while (lineStart > 0 && document[lineStart - 1] != '\r' && document[lineStart - 1] != '\n')
+            while (lineStart > 0 && doc[lineStart - 1] != '\r' && doc[lineStart - 1] != '\n')
             {
                 lineStart--;
             }
 
             int lineEnd = end;
-            if (end > start && end > 0 && (document[end - 1] == '\r' || document[end - 1] == '\n') && lineEnd == end)
+            if (end > start && end > 0 && (doc[end - 1] == '\r' || doc[end - 1] == '\n') && lineEnd == end)
             {
                 lineEnd = end - 1;
-                while (lineEnd > lineStart && (document[lineEnd] == '\r' || document[lineEnd] == '\n'))
+                while (lineEnd > lineStart && (doc[lineEnd] == '\r' || doc[lineEnd] == '\n'))
                 {
                     lineEnd--;
                 }
             }
-
-            while (lineEnd < document.Length && document[lineEnd] != '\r' && document[lineEnd] != '\n')
+            while (lineEnd < doc.Length && doc[lineEnd] != '\r' && doc[lineEnd] != '\n')
             {
                 lineEnd++;
             }
-
             if (lineEnd < lineStart) lineEnd = lineStart;
-            string selectedBlock = document.Substring(lineStart, lineEnd - lineStart);
 
-            string formattedBlock = Notepads.Utilities.MarkdownHeadingHelper.FormatLines(selectedBlock, prefix);
+            string lineText = (lineEnd > lineStart) ? doc.Substring(lineStart, lineEnd - lineStart) : string.Empty;
 
-            TextEditorCore.Document.Selection.SetRange(lineStart, lineEnd);
-            TextEditorCore.Document.Selection.SetText(Windows.UI.Text.TextSetOptions.None, formattedBlock);
+            // Strip any leading '#' symbols from the line (e.g. "###### ฟหหก" or "### Title")
+            string cleanedLineText = System.Text.RegularExpressions.Regex.Replace(
+                lineText,
+                @"^(\s*)#{1,6}\s*",
+                "$1",
+                System.Text.RegularExpressions.RegexOptions.Multiline);
 
-            if (start == end)
+            if (cleanedLineText != lineText)
             {
-                int offset = formattedBlock.Length - selectedBlock.Length;
-                int newCursorPos = Math.Max(lineStart, Math.Min(start + offset, lineStart + formattedBlock.Length));
-                TextEditorCore.Document.Selection.SetRange(newCursorPos, newCursorPos);
+                var lineRange = TextEditorCore.Document.GetRange(lineStart, lineEnd);
+                lineRange.SetText(Windows.UI.Text.TextSetOptions.None, cleanedLineText);
+                lineEnd = lineStart + cleanedLineText.Length;
+            }
+
+            var currentStyle = GetCurrentLineHeadingStyle();
+            var effectiveStyle = (targetStyle == currentStyle || targetStyle == Notepads.Utilities.MarkdownHeadingStyle.Body)
+                ? Notepads.Utilities.MarkdownHeadingStyle.Body
+                : targetStyle;
+
+            float baseFontSize = (float)TextEditorCore.FontSize;
+            float targetSize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(effectiveStyle, baseFontSize);
+            bool isBold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(effectiveStyle);
+            var targetBold = isBold ? Windows.UI.Text.FormatEffect.On : Windows.UI.Text.FormatEffect.Off;
+
+            if (lineEnd > lineStart)
+            {
+                var range = TextEditorCore.Document.GetRange(lineStart, lineEnd);
+                range.CharacterFormat.Size = targetSize;
+                range.CharacterFormat.Bold = targetBold;
+
+                if (start == end)
+                {
+                    int newCursor = Math.Min(lineEnd, Math.Max(lineStart, start));
+                    TextEditorCore.Document.Selection.SetRange(newCursor, newCursor);
+                    TextEditorCore.Document.Selection.CharacterFormat.Size = targetSize;
+                    TextEditorCore.Document.Selection.CharacterFormat.Bold = targetBold;
+                }
+                else
+                {
+                    TextEditorCore.Document.Selection.SetRange(lineStart, lineEnd);
+                }
             }
             else
             {
-                TextEditorCore.Document.Selection.SetRange(lineStart, lineStart + formattedBlock.Length);
+                TextEditorCore.Document.Selection.SetRange(lineStart, lineStart);
+                TextEditorCore.Document.Selection.CharacterFormat.Size = targetSize;
+                TextEditorCore.Document.Selection.CharacterFormat.Bold = targetBold;
             }
 
             TextEditorCore.Focus(FocusState.Programmatic);
@@ -1530,6 +1713,11 @@ namespace Notepads.Controls.TextEditor
             cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\[(.*?)\]\(.*?\)", "$1");
 
             selection.SetText(Windows.UI.Text.TextSetOptions.None, cleaned);
+            selection.CharacterFormat.Size = (float)TextEditorCore.FontSize;
+            selection.CharacterFormat.Bold = Windows.UI.Text.FormatEffect.Off;
+            selection.CharacterFormat.Italic = Windows.UI.Text.FormatEffect.Off;
+            selection.CharacterFormat.Strikethrough = Windows.UI.Text.FormatEffect.Off;
+            selection.CharacterFormat.Underline = Windows.UI.Text.UnderlineType.None;
             TextEditorCore.Focus(FocusState.Programmatic);
         }
 

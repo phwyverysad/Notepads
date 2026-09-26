@@ -169,6 +169,18 @@ namespace Notepads.Controls.TextEditor
 
         Notepads.Utilities.MarkdownHeadingStyle GetCurrentLineHeadingStyle();
 
+        void FormatBold();
+
+        void FormatItalic();
+
+        void FormatStrikethrough();
+
+        bool IsBold();
+
+        bool IsItalic();
+
+        bool IsStrikethrough();
+
         void InsertTable(int rows, int cols);
 
         void ClearFormatting();

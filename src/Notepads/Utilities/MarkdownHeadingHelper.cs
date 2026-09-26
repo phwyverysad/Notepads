@@ -52,16 +52,118 @@ namespace Notepads.Utilities
         {
             if (string.IsNullOrEmpty(prefix)) return MarkdownHeadingStyle.Body;
             string trimmed = prefix.Trim();
-            switch (trimmed)
+            switch (trimmed.ToLowerInvariant())
             {
-                case "#": return MarkdownHeadingStyle.Title;
-                case "##": return MarkdownHeadingStyle.Subtitle;
-                case "###": return MarkdownHeadingStyle.Heading1;
-                case "####": return MarkdownHeadingStyle.Heading2;
-                case "#####": return MarkdownHeadingStyle.Heading3;
-                case "######": return MarkdownHeadingStyle.Heading4;
-                default: return MarkdownHeadingStyle.Body;
+                case "title":
+                case "#":
+                    return MarkdownHeadingStyle.Title;
+                case "subtitle":
+                case "##":
+                    return MarkdownHeadingStyle.Subtitle;
+                case "heading1":
+                case "h1":
+                case "###":
+                    return MarkdownHeadingStyle.Heading1;
+                case "heading2":
+                case "h2":
+                case "####":
+                    return MarkdownHeadingStyle.Heading2;
+                case "heading3":
+                case "h3":
+                case "#####":
+                    return MarkdownHeadingStyle.Heading3;
+                case "heading4":
+                case "h4":
+                case "######":
+                    return MarkdownHeadingStyle.Heading4;
+                case "body":
+                default:
+                    return MarkdownHeadingStyle.Body;
             }
+        }
+
+        public static float GetHeadingFontSize(MarkdownHeadingStyle style, float baseFontSize)
+        {
+            switch (style)
+            {
+                case MarkdownHeadingStyle.Title:
+                    return Math.Max(26f, (float)Math.Round(baseFontSize * 1.85, 1));
+                case MarkdownHeadingStyle.Subtitle:
+                    return Math.Max(19f, (float)Math.Round(baseFontSize * 1.35, 1));
+                case MarkdownHeadingStyle.Heading1:
+                    return Math.Max(22f, (float)Math.Round(baseFontSize * 1.55, 1));
+                case MarkdownHeadingStyle.Heading2:
+                    return Math.Max(18f, (float)Math.Round(baseFontSize * 1.30, 1));
+                case MarkdownHeadingStyle.Heading3:
+                    return Math.Max(16f, (float)Math.Round(baseFontSize * 1.15, 1));
+                case MarkdownHeadingStyle.Heading4:
+                    return Math.Max(14.5f, (float)Math.Round(baseFontSize * 1.05, 1));
+                case MarkdownHeadingStyle.Body:
+                default:
+                    return Math.Max(12f, baseFontSize);
+            }
+        }
+
+        public static bool IsHeadingBold(MarkdownHeadingStyle style)
+        {
+            switch (style)
+            {
+                case MarkdownHeadingStyle.Title:
+                case MarkdownHeadingStyle.Heading1:
+                case MarkdownHeadingStyle.Heading2:
+                case MarkdownHeadingStyle.Heading3:
+                case MarkdownHeadingStyle.Heading4:
+                    return true;
+                case MarkdownHeadingStyle.Subtitle:
+                case MarkdownHeadingStyle.Body:
+                default:
+                    return false;
+            }
+        }
+
+        public static MarkdownHeadingStyle DetectStyleFromFormat(float size, bool isBold, float baseFontSize)
+        {
+            if (size <= 0) return MarkdownHeadingStyle.Body;
+
+            float titleThreshold = Math.Max(24f, baseFontSize * 1.70f);
+            float h1Threshold = Math.Max(20.5f, baseFontSize * 1.45f);
+            float subtitleThreshold = Math.Max(18.5f, baseFontSize * 1.32f);
+            float h2Threshold = Math.Max(17f, baseFontSize * 1.22f);
+            float h3Threshold = Math.Max(15f, baseFontSize * 1.10f);
+            float h4Threshold = Math.Max(14.2f, baseFontSize * 1.02f);
+
+            if (size >= titleThreshold)
+            {
+                return MarkdownHeadingStyle.Title;
+            }
+            if (size >= h1Threshold)
+            {
+                return MarkdownHeadingStyle.Heading1;
+            }
+            if (size >= subtitleThreshold && !isBold)
+            {
+                return MarkdownHeadingStyle.Subtitle;
+            }
+            if (size >= h2Threshold)
+            {
+                return MarkdownHeadingStyle.Heading2;
+            }
+            if (size >= h3Threshold)
+            {
+                return MarkdownHeadingStyle.Heading3;
+            }
+            if (size >= h4Threshold && isBold)
+            {
+                return MarkdownHeadingStyle.Heading4;
+            }
+
+            return MarkdownHeadingStyle.Body;
+        }
+
+        public static string StripHeadingPrefix(string line)
+        {
+            if (string.IsNullOrEmpty(line)) return line;
+            return HeadingStripRegex.Replace(line, "$1$2");
         }
 
         public static string GetDisplayName(MarkdownHeadingStyle style)

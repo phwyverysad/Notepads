@@ -62,7 +62,7 @@ namespace Notepads.Views.MainPage
                 ToolBarMenuStatusBarToggleItem.IsChecked = AppSettingsService.ShowStatusBar;
             }
 
-            UpdateActiveHeadingUI();
+            UpdateActiveFormattingUI();
         }
 
         // ==================== ไฟล์ (File) Menu Handlers ====================
@@ -274,11 +274,16 @@ namespace Notepads.Views.MainPage
                 var editor = NotepadsCore.GetSelectedTextEditor();
                 editor?.FormatHeading(prefix);
                 ToolBarHeadingFlyout?.Hide();
-                UpdateActiveHeadingUI();
+                UpdateActiveFormattingUI();
             }
         }
 
         private void UpdateActiveHeadingUI()
+        {
+            UpdateActiveFormattingUI();
+        }
+
+        private void UpdateActiveFormattingUI()
         {
             var editor = NotepadsCore.GetSelectedTextEditor();
             var style = editor != null ? editor.GetCurrentLineHeadingStyle() : Notepads.Utilities.MarkdownHeadingStyle.Body;
@@ -295,6 +300,30 @@ namespace Notepads.Views.MainPage
             SetHeadingItemState(HeadingItem_H3, HeadingIndicator_H3, style == Notepads.Utilities.MarkdownHeadingStyle.Heading3);
             SetHeadingItemState(HeadingItem_H4, HeadingIndicator_H4, style == Notepads.Utilities.MarkdownHeadingStyle.Heading4);
             SetHeadingItemState(HeadingItem_Body, HeadingIndicator_Body, style == Notepads.Utilities.MarkdownHeadingStyle.Body);
+
+            if (ToolBarBoldButton != null)
+            {
+                bool isBold = editor != null && editor.IsBold();
+                ToolBarBoldButton.Background = isBold
+                    ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
+                    : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+            }
+
+            if (ToolBarItalicButton != null)
+            {
+                bool isItalic = editor != null && editor.IsItalic();
+                ToolBarItalicButton.Background = isItalic
+                    ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
+                    : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+            }
+
+            if (ToolBarStrikethroughButton != null)
+            {
+                bool isStrikethrough = editor != null && editor.IsStrikethrough();
+                ToolBarStrikethroughButton.Background = isStrikethrough
+                    ? (Windows.UI.Xaml.Media.Brush)Application.Current.Resources["SystemControlHighlightListLowBrush"]
+                    : new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Transparent);
+            }
         }
 
         private void SetHeadingItemState(Button item, Border indicator, bool isActive)
@@ -338,17 +367,23 @@ namespace Notepads.Views.MainPage
 
         private void ToolBarBoldButton_Click(object sender, RoutedEventArgs e)
         {
-            NotepadsCore.GetSelectedTextEditor()?.WrapSelection("**", "**");
+            var editor = NotepadsCore.GetSelectedTextEditor();
+            editor?.FormatBold();
+            UpdateActiveFormattingUI();
         }
 
         private void ToolBarItalicButton_Click(object sender, RoutedEventArgs e)
         {
-            NotepadsCore.GetSelectedTextEditor()?.WrapSelection("*", "*");
+            var editor = NotepadsCore.GetSelectedTextEditor();
+            editor?.FormatItalic();
+            UpdateActiveFormattingUI();
         }
 
         private void ToolBarStrikethroughButton_Click(object sender, RoutedEventArgs e)
         {
-            NotepadsCore.GetSelectedTextEditor()?.WrapSelection("~~", "~~");
+            var editor = NotepadsCore.GetSelectedTextEditor();
+            editor?.FormatStrikethrough();
+            UpdateActiveFormattingUI();
         }
 
         private void ToolBarLinkButton_Click(object sender, RoutedEventArgs e)

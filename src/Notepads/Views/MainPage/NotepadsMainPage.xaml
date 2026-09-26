@@ -794,7 +794,10 @@
                                                 BorderThickness="0"
                                                 Style="{ThemeResource ButtonRevealStyle}"
                                                 Click="ToolBarStrikethroughButton_Click"
-                                                ToolTipService.ToolTip="ขีดทับ (Strikethrough)">
+                                                ToolTipService.ToolTip="ขีดทับ (Ctrl+Shift+X)">
+                                            <Button.KeyboardAccelerators>
+                                                <KeyboardAccelerator Key="X" Modifiers="Control,Shift" />
+                                            </Button.KeyboardAccelerators>
                                             <TextBlock Text="S" TextDecorations="Strikethrough" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         </Button>
 

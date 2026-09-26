@@ -354,5 +354,76 @@ namespace Notepads.Tests
             var (start, end, rep, _) = Notepads.Utilities.MarkdownInlineHelper.FormatInline(doc, selStart, selEnd, "**");
             Assert.AreEqual("**เลือกคำนี้** ", rep);
         }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_DetectStyleFromFormat_IdentifiesAllStyles()
+        {
+            float baseSize = 14f;
+
+            // Title: ~26pt, bold
+            float titleSize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Title, baseSize);
+            bool titleBold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(Notepads.Utilities.MarkdownHeadingStyle.Title);
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Title,
+                Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(titleSize, titleBold, baseSize));
+
+            // Heading1: ~22pt, bold
+            float h1Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading1, baseSize);
+            bool h1Bold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(Notepads.Utilities.MarkdownHeadingStyle.Heading1);
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading1,
+                Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(h1Size, h1Bold, baseSize));
+
+            // Subtitle: ~19pt, normal
+            float subSize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Subtitle, baseSize);
+            bool subBold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(Notepads.Utilities.MarkdownHeadingStyle.Subtitle);
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Subtitle,
+                Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(subSize, subBold, baseSize));
+
+            // Heading2: ~18pt, bold
+            float h2Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading2, baseSize);
+            bool h2Bold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(Notepads.Utilities.MarkdownHeadingStyle.Heading2);
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading2,
+                Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(h2Size, h2Bold, baseSize));
+
+            // Heading3: ~16pt, bold
+            float h3Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading3, baseSize);
+            bool h3Bold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(Notepads.Utilities.MarkdownHeadingStyle.Heading3);
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading3,
+                Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(h3Size, h3Bold, baseSize));
+
+            // Heading4: ~14.5pt, bold
+            float h4Size = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Heading4, baseSize);
+            bool h4Bold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(Notepads.Utilities.MarkdownHeadingStyle.Heading4);
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading4,
+                Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(h4Size, h4Bold, baseSize));
+
+            // Body: 14pt, normal
+            float bodySize = Notepads.Utilities.MarkdownHeadingHelper.GetHeadingFontSize(Notepads.Utilities.MarkdownHeadingStyle.Body, baseSize);
+            bool bodyBold = Notepads.Utilities.MarkdownHeadingHelper.IsHeadingBold(Notepads.Utilities.MarkdownHeadingStyle.Body);
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Body,
+                Notepads.Utilities.MarkdownHeadingHelper.DetectStyleFromFormat(bodySize, bodyBold, baseSize));
+        }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_StripHeadingPrefix_RemovesHashSymbolsDirectly()
+        {
+            Assert.AreEqual("ฟหหกฟหห", Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix("###### ฟหหกฟหห"));
+            Assert.AreEqual("ข้อความ", Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix("# ข้อความ"));
+            Assert.AreEqual("   ข้อความ", Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix("   ### ข้อความ"));
+            Assert.AreEqual("ไม่มีสัญลักษณ์", Notepads.Utilities.MarkdownHeadingHelper.StripHeadingPrefix("ไม่มีสัญลักษณ์"));
+        }
+
+        [TestMethod]
+        public void MarkdownHeadingHelper_GetStyleForPrefix_SupportsNamedAndHashTags()
+        {
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Title, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("Title"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Subtitle, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("Subtitle"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading1, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("Heading1"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading1, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("h1"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading2, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("#### "));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading3, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("##### "));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Heading4, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("###### "));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Body, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix("Body"));
+            Assert.AreEqual(Notepads.Utilities.MarkdownHeadingStyle.Body, Notepads.Utilities.MarkdownHeadingHelper.GetStyleForPrefix(""));
+        }
     }
 }
